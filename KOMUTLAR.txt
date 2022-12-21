@@ -1,0 +1,100 @@
+PYTHON VE PİP SÜRÜMLERİNİ KONTROL EDİN
+python --version
+pip --version
+
+ENV DOSYASINI OLUŞTUR.
+python -m venv env
+(virtual env kurduk)(bunu yapmamızın sebbei her projeye ait package ler var 
+biz bunları globale yüklemek istemiyoruz ve bir de 
+sürümlerin uyuşmama gibi bir sorun çıkarmaması için kullanılır)
+Install virtual environment
+(bunu yapmamızın sebebi sistemlerin, paketlerin versiyonları değişse bile
+daha sonradan hata vermeden kullanılabilsin diye global'de değil virtual'da çalışmak lazım.)
+
+ENV AKTİF ET.
+.\env\Scripts\activate
+BASH İLE AKTİF ETMEK İÇİN
+source env/Scripts/Activate
+LINUX/MAC
+source env/bin/activate
+
+AKTİF HALİ PASİF HALE ÇEVİRMEK İÇİN.
+deactivate
+
+AKTİF ETMEDE SORUN YAŞARSAN AŞAĞIDAKİ KOMUTU ÇALIŞTIR.
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+DJANGO KURULUMU.
+pip install django
+
+PİP GÜNCEL DEĞİL WARNİNGİ SONRASI PİP GÜNCELLEME.
+python -m pip install --upgrade pip
+
+YÜKLÜ PAKETLERİ LİSTELER
+pip freeze veya pip list
+
+pip freeze > requirements.txt(yüklü paketleri txt dosyasına kaydettik)
+(bunu yapmamızın sebebi projeyi sunduğumuzda kullanndığımız paketleri göstermesi için)
+
+GİTİGNORE OLUŞTUR.
+googleden ara ve bul. oluşturduğun env dosyası ismi gitignore Environments bölümünde olmalı. env'den farklı bir isim verdiysen gitignore içine ilgili bölüme dosya ismini ekle.
+(https://www.toptal.com/developers/gitignore/api/django)
+(githuba projeyi göndermek için içeriğini toptal gibi sitelerden alabiliriz yada önceki projelerimizden alabiliriz)
+
+PROJE OLUŞTUR
+django-admin startproject projectname .
+(içiçe olmadan proje başlatma komutu. eğer nokta koymazsak projeyi içiçe klasör yapısıyla oluşturyor. ilk oluşturmada main dosya ismi tercihi bestpractice.)
+
+SERVER DURDUR
+ctrl + C
+
+APP OLUŞTURMA
+python manage.py startapp (appname)
+(appname)appı oluştrduk)(bunu yaptıktan sonra proje dizinine gidip settings.py e girip
+installed appse appimizi tanıtmamız gerekiyor)
+
+SERVER ÇALIŞTIR
+python manage.py runserver
+(SERVERyi ayağa kaldırma default port 8000)
+
+PORT NUMARASINI DEĞIŞTIRME
+python manage.py runserver 8080
+
+PULL EDILEN PROJEYI AYAĞA KALDıRMAK IÇIN
+pip install -r requirements.txt
+(bunu repodan bir proje indirdiğimizde paketleri yüklemek için kullanıyoruz)
+
+OLUŞTURULAN TABLOLAR İLE İLGİLİ GEREKLİ HAZIRLIKLARI YAP:
+python manage.py makemigrations
+(Database'de bi değişiklik yapacaksam bu ve aşağıdaki 2 komutun çalıştırılması gerekli.)
+(app/migrations/ altında 0001_initial isminde bir dosya oluşturarak içerisine model'deki değişiklikleri attı.)
+
+PAKETLERİN VERİTABANINA AKTARILMASI, TABLOLARIN OLUŞTURULMASI İÇİN. PROJE ÇALIŞTIRIRILIRKEN ALINAN ERRORDAN KURTULMAYI SAĞLAR.
+python manage.py migrate
+
+SUPERUSER OLUŞTURMA
+python manage.py createsuperuser
+1.python manage.py createsuperuser
+2.username belirleyin
+3.emaili bos gecebilirsiniz.
+4.password yazsaniz da gorunmuyor ama yazabiliyorsunuz, bir sifre belirleyin, tekrar sordugunda ayni sifreyi bir daha yazin
+5.python manage.py runserver ile tekrar baslatin
+6.url'nin sonuna admin yazarak login sayfasina gecin
+7.user ve password bilginizle giris yapin
+
+SOURCE KODU GÖRMEK İÇİN
+CTRL + click
+
+APP'İ ADMINUSERDE GÖRMEK İÇİN
+app/admin.py içerisinde import et ve tanımla. 
+from .models import student
+admin.site.register(student)
+
+ORM KOMUTLARINI YAZMAK İÇİN
+python manage.py shell
+
+import appName.models import className 
+s1 = Student.objects.all()
+s1 = Student.objects.get(...)
+s1 = Student.objects.filter(...)
+s1

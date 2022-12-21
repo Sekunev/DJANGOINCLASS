@@ -1,0 +1,2 @@
+ORM nedir: (Object Relational Mapping)
+ORM-> python ile yazılan sorgu kodlarını arka plandaki database için SQL formatına çevirir.

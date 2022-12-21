@@ -1,0 +1,414 @@
+; modeller
+; Model, verilerinizle ilgili tek ve kesin bilgi kaynağıdır. Sakladığınız verilerin temel alanlarını ve davranışlarını içerir. Genel olarak, her model tek bir veritabanı tablosuna eşlenir. Django yönetici panelini model alanlarını ve benzeri çeşitli işlemleri oluşturmak, almak, güncellemek veya silmek için kullanabiliriz.
+
+; Her model, django.db.models.Model alt sınıflarını oluşturan bir Python sınıfıdır .
+; Modelin her özelliği bir veritabanı alanını temsil eder.
+; Tüm bunlarla birlikte, Django size otomatik olarak oluşturulmuş bir veritabanı erişim API'si sağlar.
+; İlk modelimizi oluşturalım. fscohort/models.py dosyasını açın ve bu kodu yazın.
+
+from django.db import models
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    number = models.IntegerField()    
+
+    first_name = models.CharField(max_length=30)
+
+
+first_name , last_name ve r sayısı modelin alanlarıdır . Her alan bir sınıf özniteliği olarak belirtilir ve her öznitelik bir veritabanı sütununa eşlenir.
+CharField ve IntegerField , veritabanına ne tür verilerin saklanacağını söyleyen alan türleridir . Birçok alan türü vardır. Listenin tamamını buradan görüntüleyebilirsiniz.
+max_length , Charfield için gerekli olan alan bağımsız değişkenidir . Ayrıca, tüm alan türleri için kullanılabilen bir dizi ortak bağımsız değişken vardır. Hepsi isteğe bağlıdır. Alan seçeneğinin tam listesini burada görüntüleyebilirsiniz.
+Yukarıdaki Öğrenci modeli, bunun gibi bir veritabanı tablosu oluşturur:
+CREATE TABLE Student (
+
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     first_name  varchar(30) NOT NULL,
+     last_name  varchar(30) NOT NULL,
+     number  INT NOT NULL,
+);
+
+Django tarafından modele otomatik olarak bir id alanı eklenir.
+Bu komutu çalıştırın;
+
+python manage.py makemigrations fscohort
+
+makemigrations çalıştırarak , Django'ya modellerinizde bazı değişiklikler yaptığınızı (bu durumda yenilerini yaptığınızı) ve değişikliklerin bir geçiş olarak depolanmasını istediğinizi söylüyorsunuz.
+
+Şimdi bu komutu çalıştırın;
+
+python manage.py migrate 
+
+"""Migrate komutu, uygulanmamış tüm geçişleri alır ve bunları veritabanınızda çalıştırır - temel olarak, modellerinizde yaptığınız değişiklikleri veritabanındaki şema ile senkronize eder.
+
+Şimdi yöneticiye Student modelinin bir yönetici arayüzüne sahip olduğunu söylememiz gerekiyor. Bunun için fscohort/admin.py dosyasını açın ve bu şekilde düzenleyin."""
+
+from django.contrib import admin
+from .models import Student
+admin.site.register(Student)
+
+Sunucunuz çalışmıyorsa başlatın
+
+python manage.py runserver
+
+Süper kullanıcımızı zaten oluşturduk. Siz oluşturmadıysanız, oluşturun 
+
+python manage.py createsuperuser
+
+Ardından yönetici sayfanıza giriş yapın. Giriş yaptıktan sonra, modelinizi yönetici sayfasında görmelisiniz.
+
+Veri tabanı
+"Kutudan çıktığı haliyle" Django, Python dağıtımına dahil olan hafif bir ilişkisel veritabanı olan SQLite ile iletişim kurmak için ayarlanmıştır. Dolayısıyla varsayılan olarak Django, projeniz için otomatik olarak bir SQLite veritabanı oluşturur.
+
+Django, SQLite'a ek olarak resmi olarak beş veritabanını destekler:
+
+postgresql
+MySQL
+kehanet
+MariaDB (yalnızca Django 3)
+Bir veritabanına bağlanmak için Django yapılandırması , DATABASES değişkenindeki settting.pybir Django projesinin dosyasında yapılır.
+
+# Database
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+Django ORM ve Sorgulama Yapma
+Django ORM'si
+Django'nun en güçlü özelliklerinden biri, SQL'de olduğu gibi veritabanıyla etkileşim kurmanın zarif ve güçlü bir yolunu sağlayan Nesne-İlişkisel Eşleştiricisidir (ORM) . Veritabanı işlemleri için SQL sorguları yazmanıza gerek yoktur. ORM, adından da anlaşılacağı gibi, nesne niteliklerini ilgili tablo alanlarına eşler. Ayrıca bu şekilde veri alabilir.
+
+sorgu yapma
+Veri modellerinizi oluşturduktan sonra, Django size nesneleri oluşturmanıza, almanıza, güncellemenize ve silmenize izin veren bir veritabanı soyutlama API'sini (ORM) otomatik olarak verir. Bazı en yaygın Sorgulama yöntemlerini göreceğiz. Yöntemlerin tam listesini burada görebilirsiniz.
+
+Django Kabuğu
+Django kabuğu, Django'da bulunan veritabanı API'sine erişmenizi sağlayan bir Python kabuğudur. Veritabanı API'si, proje veritabanına veri modelinden erişmenizi sağlayan bir dizi Python yöntemidir.
+
+Konsolunuzu açın ve şu komutu yazın:
+
+$ python manage.py shell
+
+Artık Django etkileşimli konsolundasınız.
+
+(InteractiveConsole)
+>>> 
+
+(InteractiveConsole)
+>>> 
+Bundan sonra komutlarımızı burada uygulayacağız.
+
+Nesneler oluşturma :
+Öncelikle Student modelimizi içe aktarmamız gerekiyor.
+
+>>> from fscohort.models import Student
+
+>>> from fscohort.models import Student
+Şimdi ilk nesnemizi oluşturalım.
+
+>>> s1 = Student(first_name="Henry", last_name="Forester", number=123) 
+Daha sonra veritabanına kaydetmemiz gerekiyor.
+
+>>> s1.save()
+Daha fazla nesne oluştur
+
+>>> s2 = Student(first_name="Edward", last_name="Benedict", number=321) 
+>>> s2.save()
+>>> s3= Student(first_name="Mccarthy", last_name="Silva", number=456)
+>>> s3.save()
+>>> s4 = Student(first_name="Mark", last_name="Madison", number=654) 
+>>> s4.save()
+Bir nesneyi tek adımda oluşturmak ve kaydetmek için create() yöntemini kullanabiliriz.
+
+>>> s5 = Student.objects.create(first_name="Adam", last_name="Flyer", number=789) 
+Tüm nesneleri alma
+Bir tablodan nesneleri almanın en basit yolu, hepsini almaktır. Bunu yapmak için all()yöntemi kullanın
+
+>>> all_students = Student.objects.all()
+>>> print(all_students) 
+<QuerySet [<Student: Student object (2)>, <Student: Student object (3)>, <Student: Student object (4)>, <Student: Student object (5)>, <Student: Student object (6)>]>
+
+all_students'ı yazdırdığınızda , veritabanındaki tüm nesnelerin bir QuerySet'ini (veritabanınızdaki nesnelerin koleksiyonu) döndürür. Sorgu kümenizi daha okunaklı bir biçimde görmek istiyorsanız, modelinizi şu şekilde değiştirebilirsiniz;
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    number = models.IntegerField()
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name) # Now it returns firt_name + last_name instead of Student object
+
+Şimdi exit()kabuğunuz ve yeniden bağlanın ve aynı kodu tekrar çalıştırın. Bu çıktıyı görmelisiniz.
+
+<QuerySet [<Student: Henry Forester>, <Student: Edward Benedict>, <Student: Mccarthy Silva>, <Student: Mark Madison>, <Student: Adam Flyer>]>
+
+Tek bir nesneyi alma
+Sorgunuzla eşleşen tek bir nesne olduğunu biliyorsanız , get() yöntemini kullanabilirsiniz.
+
+>>> g1 = Student.objects.get(first_name="Henry") 
+>>> print(g1) 
+Henry Forester
+
+Filtrelerle belirli nesneleri alma
+all() tarafından döndürülen QuerySet, veritabanı tablosundaki tüm nesneleri tanımlar. Ancak genellikle, tüm nesne kümesinin yalnızca bir alt kümesini seçmeniz gerekir.
+
+filter(): Verilen arama parametreleriyle eşleşen nesneleri içeren yeni bir QuerySet döndürür.
+
+>>> f1 = Student.objects.filter(first_name__startswith="m")      
+>>> print(f1) 
+<QuerySet [<Student: Mccarthy Silva>, <Student: Mark Madison>]>
+
+  Not: First_name ile startwith arasında iki alt çizgi karakteri (_) vardır. Django'nun ORM'si, alan adlarını ("ad_ad") ve işlemleri veya filtreleri ("startswith") ayırmak için bu kuralı kullanır.
+hariç(): Verilen arama parametreleriyle eşleşmeyen nesneleri içeren yeni bir QuerySet döndürür.
+
+>>> e1 = Student.objects.exclude(first_name__startswith="m") 
+>>> print(e1) 
+<QuerySet [<Student: Henry Forester>, <Student: Edward Benedict>, <Student: Adam Flyer>]>
+
+Sorgu Kümelerini Sıralama ve Sınırlandırma
+
+>>> Student.objects.order_by("first_name")[:2]  
+<QuerySet [<Student: Adam Flyer>, <Student: Edward Benedict>]>
+
+⚠️Not:
+Negatif indeksleme (Student.objects.all()[-1]) desteklenmez.
+
+Django modellerinde ilişkiler
+Django modelleri, aralarındaki ilişkileri barındırmak için varsayılan olarak ilişkisel veritabanı sistemleriyle (RDBMS) birlikte çalışır. Veritabanı ilişkileri, en temel biçimleriyle, bir anahtara veya kimliğe dayalı olarak kayıtları bağlamak için kullanılır, bu da diğer faydaların yanı sıra daha iyi veri yönetimi, sorgu doğruluğu ve daha az yinelenen veri sağlar.
+
+İlişkisel veritabanı sistemleri üç ilişkiyi destekler: birden çoğa , çoktan çoğa ve birden bire . Django modelleri aynı üç ilişkiyi destekler.
+
+Şimdi dj_relationships adında yeni bir uygulama oluşturalım ve her ilişki hakkında daha fazla bilgi edinelim. (Uygulamanızı INSTALLED_APPS'ye eklemeyi unutmayın )
+
+Bire Bir İlişki
+Bire bir ilişkiler, ilgili tablodaki bir kayda karşılık gelen birinci tabloda tam olarak bir kayıt olduğunda ortaya çıkar. Burada, her dilin bir yaratıcısı olduğunu bildiğimiz bir örneğimiz var.
+
+Şimdi modellerimizi oluşturalım;
+
+class Creator(models.Model):
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+
+class Languages(models.Model):
+    creator = models.OneToOneField(Creator, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+dj_relationshipst/models.py
+
+Satır 10. İlişkiyi modeller ile tanımlarız.OneToOneField
+
+on_delete (bire bir ve birden çoğa kullanılır) bağımsız değişkeni, bir taraf kaldırıldığında diğer tarafa ne olacağını belirtmenizi sağlar. models.CASCADE içeren modelimizde, örnek Creatorsilinirse, LanguageCreator örneğine referans veren kayıtlar da deleted. Diğer seçenekleri burada bulabilirsiniz.
+
+ve çalıştır python manage.py makemigrationsve python manage.py migratekomutlar.
+
+Sorgulama
+Django etkileşimli konsolunuzu açın;
+
+>>> from dj_relationships.models import Creator, Languages
+>>> p = Creator.objects.create(first_name="Guido van", last_name="Rossum")
+>>> j = Creator.objects.create(first_name="James", last_name="Gosling")
+>>> js = Creator.objects.create(first_name="Brenden", last_name="Eich")
+>>> pyt = Languages.objects.create(creator=p, name="python")
+>>> java = Languages.objects.create(creator=j, name="java")
+>>> javascript = Languages.objects.create(creator=js, name="java script")
+>>> p
+<Creator: Guido van Rossum>
+>>> j
+<Creator: James Gosling>
+>>> js
+<Creator: Brenden Eich>
+>>> python
+<Languages: python>
+>>> java
+<Languages: java>
+>>> javascript
+<Languages: java script>
+Şimdi bir sorgulama yapalım;
+
+# Access the Languages object and its fields through Creator object 
+# (use lowercase model name Languages --> languages)
+>>> p.languages.name
+'python'
+
+# Access the Creator object and its fields through the Languages object
+>>> pyt.creator.first_name
+'Guido van'
+
+# Get Creator objects through Languages with name startswith "J"
+>>> Creator.objects.filter(languages__name__startswith="J")
+<QuerySet [<Creator: James Gosling>, <Creator: Brenden Eich>]>
+
+# Get Languages objects through Creator with first_name startswith "J"
+>>> Languages.objects.filter(creator__first_name__startswith="j")
+<QuerySet [<Languages: java>]>
+
+Bire Çok İlişki
+
+class Creator(models.Model):
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+
+class Languages(models.Model):
+    creator = models.OneToOneField(Creator, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Frameworks(models.Model):
+    languages = models.ForeignKey(Languages, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+Bir-Çoğa ilişki, bir tablodaki bir üst kayıt, başka bir tablodaki birkaç alt kayda potansiyel olarak başvurabildiğinde oluşur. Birden çoğa ilişkide, ebeveynin alt kayıtlara sahip olması gerekli değildir.
+
+dj_relationships/models.py dosyamıza bir Framework modeli ekleyelim .
+
+Satır 27. Modellerle ilişkiyi tanımlarız.ForeignKey
+
+ve çalıştır python manage.py makemigrationsve python manage.py migratekomutlar.
+
+Sorgulama
+Django etkileşimli konsolunuzu açın;
+
+>>> from dj_relationships.models import Creator, Languages, Frameworks
+# get Languages objects from db
+>>> pyt = Languages.objects.get(name="python")
+>>> java = Languages.objects.get(name="java")
+>>> javascript=Languages.objects.get(name="java script")
+
+# create Frameworks objects
+>>> django=Frameworks.objects.create(languages=pyt, name="django")   
+>>> flask=Frameworks.objects.create(languages=pyt, name="flask")  
+>>> spring=Frameworks.objects.create(languages=java, name="spring")
+>>> struts=Frameworks.objects.create(languages=java, name="struts") 
+
+>>> django
+<Frameworks: django>
+>>> flask
+<Frameworks: flask>
+>>> spring
+<Frameworks: spring>
+>>> struts
+<Frameworks: struts>
+Şimdi bir sorgulama yapalım;
+
+# Access the Languages object and its fields through Frameworks object
+>>> django.languages.name
+'python'
+>>> django.languages.creator   
+<Creator: Guido van Rossum>
+
+# Access the Frameworks objects through Languages object
+# (use lowercase model name and underscore set Frameworks--> frameworks_set)
+>>> pyt.frameworks_set.all() 
+<QuerySet [<Frameworks: django>, <Frameworks: flask>]>
+>>> pyt.frameworks_set.filter(name__startswith="f")
+<QuerySet [<Frameworks: flask>]>
+
+# Get Frameworks objects through Languages with name "java"
+>>> Frameworks.objects.filter(languages__name="java") 
+<QuerySet [<Frameworks: spring>, <Frameworks: struts>]>
+
+# Get Languages objects through Frameworks with name "flask"
+>>> Languages.objects.filter(frameworks__name="flask")     
+<QuerySet [<Languages: python>]>
+
+Çoktan Çoğa İlişki
+Çoktan Çoğa ilişkisi, bir tablodaki bir üst kayıt başka bir tabloda birkaç alt satır içerdiğinde ve bunun tersi de geçerlidir.
+
+dj_relationships/models.py dosyamıza bir Programcı modeli ekleyelim .
+
+class Creator(models.Model):
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+
+class Languages(models.Model):
+    creator = models.OneToOneField(Creator, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Frameworks(models.Model):
+    languages = models.ForeignKey(
+        Languages, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Programmer(models.Model):
+    framework = models.ManyToManyField(Frameworks, db_table="dd")
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+Satır 27. Modellerle ilişkiyi tanımlarız.ManyToManyField
+
+ve çalıştır python manage.py makemigrationsve python manage.py migratekomutlar.
+
+Sorgulama
+Django etkileşimli konsolunuzu açın;
+
+>>> from dj_relationships.models import Frameworks, Programmer
+# get Frameworks objects from db
+>>> django=Frameworks.objects.get(name="django") 
+>>> flask=Frameworks.objects.get(name="flask")   
+>>> struts=Frameworks.objects.get(name="struts")         
+>>> spring=Frameworks.objects.get(name="spring") 
+
+# create Programmer objects
+>>> henry=Programmer.objects.create(first_name="henry", last_name="forester") 
+>>> aaron=Programmer.objects.create(first_name="aaron", last_name="a")
+
+# create relationships between Frameworks objects and Programmer objects
+>>> henry.framework.add(struts, django) 
+>>> aaron.framework.add(django,flask)
+Şimdi bir sorgulama yapalım;
+
+# Access the Frameworks objects through Programmer object
+>>> henry.framework.all() 
+<QuerySet [<Frameworks: django>, <Frameworks: struts>]>
+>>> henry.framework.filter(name__startswith="d")
+<QuerySet [<Frameworks: django>]>
+
+# Access the Programmer objects through Frameworks object
+# (use lowercase model name and underscore set Programmer --> programmer_set)
+>>> django.programmer_set.all()
+<QuerySet [<Programmer: henry forester>, <Programmer: aaron a>]>
+>>> django.programmer_set.filter(first_name__startswith="a") 
+<QuerySet [<Programmer: aaron a>]>
+
+# Get Frameworks objects through Programmer with name "henry"
+>>> Frameworks.objects.filter(programmer__first_name="henry") 
+<QuerySet [<Frameworks: django>, <Frameworks: struts>]>
+
+# Get Programmer objects through Frameworks with name startswith "d"
+>>> Programmer.objects.filter(framework__name__startswith="d")  
+<QuerySet [<Programmer: aaron a>, <Programmer: henry forester>]>
