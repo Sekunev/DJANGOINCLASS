@@ -85,10 +85,10 @@ python manage.py createsuperuser
 SOURCE KODU GÖRMEK İÇİN
 CTRL + click
 
-APP'İ ADMINUSERDE GÖRMEK İÇİN
+APP'İ ADMIN USERDE GÖRMEK İÇİN
 app/admin.py içerisinde import et ve tanımla. 
-from .models import student
-admin.site.register(student)
+from .models import Student
+admin.site.register(Student)
 
 ORM KOMUTLARINI YAZMAK İÇİN
 python manage.py shell
@@ -98,3 +98,6 @@ s1 = Student.objects.all()
 s1 = Student.objects.get(...)
 s1 = Student.objects.filter(...)
 s1
+
+
+pip install Pillow 
