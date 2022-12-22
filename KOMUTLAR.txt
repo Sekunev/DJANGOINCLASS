@@ -45,9 +45,6 @@ PROJE OLUŞTUR
 django-admin startproject projectname .
 (içiçe olmadan proje başlatma komutu. eğer nokta koymazsak projeyi içiçe klasör yapısıyla oluşturyor. ilk oluşturmada main dosya ismi tercihi bestpractice.)
 
-SERVER DURDUR
-ctrl + C
-
 APP OLUŞTURMA
 python manage.py startapp (appname)
 (appname)appı oluştrduk)(bunu yaptıktan sonra proje dizinine gidip settings.py e girip
@@ -57,19 +54,22 @@ SERVER ÇALIŞTIR
 python manage.py runserver
 (SERVERyi ayağa kaldırma default port 8000)
 
+SERVER DURDUR
+ctrl + C
+
 PORT NUMARASINI DEĞIŞTIRME
 python manage.py runserver 8080
 
-PULL EDILEN PROJEYI AYAĞA KALDıRMAK IÇIN
+PULL EDILEN PROJEYI AYAĞA KALDIRMAK IÇIN
 pip install -r requirements.txt
 (bunu repodan bir proje indirdiğimizde paketleri yüklemek için kullanıyoruz)
 
-OLUŞTURULAN TABLOLAR İLE İLGİLİ GEREKLİ HAZIRLIKLARI YAP:
+(MAKEMİGRATE) OLUŞTURULAN TABLOLAR İLE İLGİLİ GEREKLİ HAZIRLIKLARI YAP:
 python manage.py makemigrations
 (Database'de bi değişiklik yapacaksam bu ve aşağıdaki 2 komutun çalıştırılması gerekli.)
 (app/migrations/ altında 0001_initial isminde bir dosya oluşturarak içerisine model'deki değişiklikleri attı.)
 
-PAKETLERİN VERİTABANINA AKTARILMASI, TABLOLARIN OLUŞTURULMASI İÇİN. PROJE ÇALIŞTIRIRILIRKEN ALINAN ERRORDAN KURTULMAYI SAĞLAR.
+(MİGRATE) PAKETLERİN VERİTABANINA AKTARILMASI, TABLOLARIN OLUŞTURULMASI İÇİN. PROJE ÇALIŞTIRIRILIRKEN ALINAN ERRORDAN KURTULMAYI SAĞLAR.
 python manage.py migrate
 
 SUPERUSER OLUŞTURMA
@@ -91,13 +91,56 @@ from .models import Student
 admin.site.register(Student)
 
 ORM KOMUTLARINI YAZMAK İÇİN
+https://docs.djangoproject.com/en/4.1/topics/db/queries/
+(shell, django ile komut satırı üzerinden iletişim kurmaya yarar.)
 python manage.py shell
+exit() --> Çıkış
 
 import appName.models import className 
 s1 = Student.objects.all()
 s1 = Student.objects.get(...)
 s1 = Student.objects.filter(...)
-s1
+
+s1 = Student.(first_name='aaa', last_name='a') # atributlara atama yap
+s1.number = 8   # atributlara atama yap
+s1.save() # Kaydet
+
+s1 = Student.objects.create(first_name="bbb", last_name="b") # create ile atributlara atama yap
+
+s1 = Student.objects.exclude(number=9) # number'i 9 olmayan atribultarı 
+s1[0] # indexleme ile veya slice'lama ile ulaşabiliriz.
+s1 = Student.objects.filter(number=9) # number'i 9 olan atribultarı bir liste içerisinde döndürür.
+s1 = Student.objects.filter(number__gte=9) # number'i 9  ve 9'dan büyük olan atribultarı.
+s1 = Student.objects.filter(number__gt=1) # number'i 9'dan büyük olan atribultarı.
+s1 = Student.objects.filter(number__lt=9) # number'i 9'dan küçük olan atribultarı.
+s1 = Student.objects.filter(first_name__startswith="e") # first_name'i e ile başlayanlar. casesensitive değil(postsql'den dolayı.).
+s1 = Student.objects.get(first_name__exact="sem") # first_name'i sem olan (casesenstive)
+s1 =Student.objects.get(first_name__contains="ü") # first_name'i içerisinde ü olan
+
+print(s1.query) # SQL şeklinde içeriğini gösterir.
 
 
+
+
+PYTHON'DA RESİMLERLE İŞLEM YAPILACAKSA AŞAĞIDAKİ KÜTÜPHANEYİ KUR.
 pip install Pillow 
+Sonrasında bazı ayarlar yapmak gerekli.(3 ayar yapılacak.)
+settings.py dosyasına aşağıdaki komutları ekle.
+MEDIA_URL = 'media/'  --> yol belirtiyoruz. (1)
+MEDIA_ROOT = BASE_DIR / 'media/' --> media'ların yüklendiği root klasörü. Yerel olduğu için media klasörü. (2)
+main urls.py ekle (settings.py de tanımladığımız yolları urls.py de belirtmeliyiz.)(3)
+from django.conf import settings
+from django.conf.urls.static import static
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+
+
+'''
+on_delete properties:
+    # CASCADE -> if primary deleted, delete foreing too.
+    # SET_NULL -> if primary deleted, set foreign to NULL. (null=True)
+    # SET_DEFAULT -> if primary deleted, set foreing to DEFAULT value. (default='Value')
+    # DO_NOTHING -> if primary deleted, do nothing.
+    # PROTECT -> if foreign is exist, can not delete primary.
+'''

@@ -5,12 +5,17 @@ class Student(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     number = models.PositiveSmallIntegerField(blank=True, null=True)
-    #? blank: bos alan olup olamama durumu true yazmazsan boş bırakamazsın uyarı verir. null: null degeri alip alamama durumu
+    #? blank yazmazsan zorunlu alan(giriş yapılması gerekli) olarak tanımlanır.
+    #? blank: bos alan olup olamama durumu. True yazmazsan boş bırakamazsın uyarı verir. 
+    #? null: null degeri alip alamama durumu. İnteger değerli ise ve boş bırakılabilir yani blank=True ise null'da True olmalıdır. Yoksa hata verir.
     about = models.TextField(blank=True)
     email = models.EmailField(blank=True)
     is_active = models.BooleanField(default=True)
     avatar = models.ImageField(blank=True, null=True, upload_to='student')
-    register_date = models.DateTimeField(null=True, auto_now_add=True)
+    #? upload_to='student' student isminde bir klasör oluştur ve onun içerisine yükle.
+    files = models.FileField(blank=True, null=True, upload_to="student_files")
+    register_date = models.DateTimeField(null=True, auto_now_add=True) 
+    #? DateTimeField değeri verilen field'den önce başka fieldlere değer ataması yapılmışsa migrate aşamasında hata alınır. Hatada 1 seçeneği seçilebilir. Sonrasında timezone.now seçilir.
     update_date = models.DateTimeField(auto_now=True)
 
 
@@ -18,7 +23,12 @@ class Student(models.Model):
         return f"({self.number}-{self.first_name} {self.last_name})"
 
     class Meta:
-        ordering= ('-number',)
+        ordering= ('-first_name',) 
+        #! Tersden sıralama için field önüne "-"
         verbose_name = 'Öğrenci'
         verbose_name_plural = 'Öğrenciler'
-        db_table= "" # Tablo ismini değiştir.
+        db_table= "Ögrenciler" # Tablo ismini değiştir.
+
+#! auto_now : Nesne her kaydedildiğinde alanı otomatik olarak şimdi olarak ayarlar.
+
+#! auto_now_add : Nesne ilk oluşturulduğunda alanı otomatik olarak şimdi olarak ayarlayın.
