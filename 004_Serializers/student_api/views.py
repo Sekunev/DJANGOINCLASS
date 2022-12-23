@@ -1,21 +1,26 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 
-from .models import Artist, Album, Lyric, Song
+from .models import Student, Path
 
-from .serializers import ArtistSerializer
+from .serializers import StudentSerializer, PathSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+# Create your views here.
+
+
+def home(request):
+    return HttpResponse('<h1>API Page</h1>')
 
 @api_view(['GET', 'POST'])
 def student_api(request):
     if request.method == 'GET':
         students = Student.objects.all()
-        serializer = ArtistSerializer(students, many=True)
+        serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ArtistSerializer(data=request.data)
+        serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             data = {
@@ -27,10 +32,10 @@ def student_api(request):
 def student_api_get_update_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'GET':
-        serializer = ArtistSerializer(student)
+        serializer = StudentSerializer(student)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer = ArtistSerializer(student, data=request.data)
+        serializer = StudentSerializer(student, data=request.data)
         if serializer.is_valid():
             serializer.save()
             data = {
@@ -39,7 +44,7 @@ def student_api_get_update_delete(request, pk):
             return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'PATCH':
-        serializer = ArtistSerializer(student, data=request.data,partial=True)
+        serializer = StudentSerializer(student, data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             data = {
@@ -54,23 +59,23 @@ def student_api_get_update_delete(request, pk):
         }
         return Response(data)
 
-    @api_view(['GET', 'POST'])
-    def path_api(request):
+@api_view(['GET', 'POST'])
+def path_api(request):
     # from rest_framework.decorators import api_view
     # from rest_framework.response import Response
     # from rest_framework import status
 
-        if request.method == 'GET':
-            paths = Path.objects.all()
-            serializer = PathSerializer(paths, many=True, context={'request': request})
-            return Response(serializer.data)
-        elif request.method == 'POST':
-            # from pprint import pprint
-            # pprint(request)
-            serializer = PathSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                data = {
-                    "message": f"Path saved successfully!"}
-                return Response(data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'GET':
+        paths = Path.objects.all()
+        serializer = PathSerializer(paths, many=True, context={'request': request})
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        # from pprint import pprint
+        # pprint(request)
+        serializer = PathSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            data = {
+                "message": f"Path saved successfully!"}
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

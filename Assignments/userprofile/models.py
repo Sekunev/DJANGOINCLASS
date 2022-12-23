@@ -13,6 +13,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"({self.id} {self.username} {self.age})"
+        
     class Meta:
         ordering = ('username',)
         verbose_name = "Profil"

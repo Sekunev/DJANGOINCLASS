@@ -15,14 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# from fscohort.views import postclass, postclass1
-# from dscohort.views import preclass
+from artistapp.views import 
 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('postclass/', include('fscohort.urls')),
-    # path('preclass/', include('dscohort.urls')),
-    # path('postclass1/', postclass1),
-    # path('postclass/preclass', preclass),
+    path('api/', include("artist.urls")),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
