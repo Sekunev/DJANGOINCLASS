@@ -2,6 +2,9 @@ PYTHON VE PİP SÜRÜMLERİNİ KONTROL EDİN
 python --version
 pip --version
 
+SOURCE KODU GÖRMEK İÇİN
+CTRL + click
+
 ENV DOSYASINI OLUŞTUR.
 python -m venv env
 (virtual env kurduk)(bunu yapmamızın sebbei her projeye ait package ler var 
@@ -33,8 +36,13 @@ python -m pip install --upgrade pip
 YÜKLÜ PAKETLERİ LİSTELER
 pip freeze veya pip list
 
-pip freeze > requirements.txt(yüklü paketleri txt dosyasına kaydettik)
-(bunu yapmamızın sebebi projeyi sunduğumuzda kullanndığımız paketleri göstermesi için)
+PROJEDEKİ PAKETLERİ REQUIREMENTS.TXT'YE YÜKLEME.
+pip freeze > requirements.txt
+(bunu yapmamızın sebebi projede kullandığımız paketleri REQUIREMENTS.TXT yükleyerek proje başkaları tarafından clonlandığında paketlerin otamatik projeye yüklenmesini sağlamaktır. Bu yüzden projeyi kapatmadan önce bu işlemi yapmak gerekli.)
+
+PULL EDILEN PROJEYI AYAĞA KALDIRMAK IÇIN
+pip install -r requirements.txt
+(bunu repodan bir proje indirdiğimizde requirements.txt deki paketleri yüklemek için kullanıyoruz)
 
 GİTİGNORE OLUŞTUR.
 googleden ara ve bul. oluşturduğun env dosyası ismi gitignore Environments bölümünde olmalı. env'den farklı bir isim verdiysen gitignore içine ilgili bölüme dosya ismini ekle.
@@ -60,10 +68,6 @@ ctrl + C
 PORT NUMARASINI DEĞIŞTIRME
 python manage.py runserver 8080
 
-PULL EDILEN PROJEYI AYAĞA KALDIRMAK IÇIN
-pip install -r requirements.txt
-(bunu repodan bir proje indirdiğimizde paketleri yüklemek için kullanıyoruz)
-
 (MAKEMİGRATE) OLUŞTURULAN TABLOLAR İLE İLGİLİ GEREKLİ HAZIRLIKLARI YAP:
 python manage.py makemigrations
 (Database'de bi değişiklik yapacaksam bu ve aşağıdaki 2 komutun çalıştırılması gerekli.)
@@ -82,11 +86,8 @@ python manage.py createsuperuser
 6.url'nin sonuna admin yazarak login sayfasina gecin
 7.user ve password bilginizle giris yapin
 
-SOURCE KODU GÖRMEK İÇİN
-CTRL + click
-
 APP'İ ADMIN USERDE GÖRMEK İÇİN
-app/admin.py içerisinde import et ve tanımla. 
+app/admin.py içerisinde import et ve tanımla.
 from .models import Student
 admin.site.register(Student)
 
@@ -101,23 +102,34 @@ s1 = Student.objects.all()
 s1 = Student.objects.get(...)
 s1 = Student.objects.filter(...)
 
-s1 = Student.(first_name='aaa', last_name='a') # atributlara atama yap
+s1 = Student(first_name='aaa', last_name='a') # atributlara atama yap bu şekilde yapıldığında save etmek gerekli.
 s1.number = 8   # atributlara atama yap
 s1.save() # Kaydet
 
 s1 = Student.objects.create(first_name="bbb", last_name="b") # create ile atributlara atama yap
 
 s1 = Student.objects.exclude(number=9) # number'i 9 olmayan atribultarı 
-s1[0] # indexleme ile veya slice'lama ile ulaşabiliriz.
+s1[0] veya  s1.first() # indexleme, slice'lama veya first() metodu ile ulaşabiliriz.
 s1 = Student.objects.filter(number=9) # number'i 9 olan atribultarı bir liste içerisinde döndürür.
 s1 = Student.objects.filter(number__gte=9) # number'i 9  ve 9'dan büyük olan atribultarı.
 s1 = Student.objects.filter(number__gt=1) # number'i 9'dan büyük olan atribultarı.
 s1 = Student.objects.filter(number__lt=9) # number'i 9'dan küçük olan atribultarı.
-s1 = Student.objects.filter(first_name__startswith="e") # first_name'i e ile başlayanlar. casesensitive değil(postsql'den dolayı.).
+s1 = Student.objects.filter(first_name__startswith="e") # first_name'i e ile başlayanlar. casesensitive değil(postsql'den dolayı.)
+s1 = Profile.objects.get(id=3)  # id'si 3 olan
 s1 = Student.objects.get(first_name__exact="sem") # first_name'i sem olan (casesenstive)
-s1 =Student.objects.get(first_name__contains="ü") # first_name'i içerisinde ü olan
+s1 = Student.objects.get(first_name__contains="ü") # first_name'i içerisinde ü olan
 
 print(s1.query) # SQL şeklinde içeriğini gösterir.
+
+Parent Modeldeki field'e ulaşma. 005 FBV dersi.
+1- Child'deki field'in foreignKey ile tanımlanmış olması gerekli.
+2- Child'deki ilgili Field'e ulaş -->  s1 = Student.objects.get(number=36) # <Student: Memal cemal>
+3- s1'in bulunduğu tablodaki foreignKey fieldi ve devamında Parent'da hangi stunu istiyorsak erişiyoruz.(number=36 olan öğrencinin Path adı.) --> s1.path.path_name # 'DS'
+4- Bir değişkene atayabilirsin. --> path_name = s1.path.path_name # 'DS'
+5- Path modelinde "d" ile başlayan fiedler -->  p1 = Path.objects.filter(path_name__startswith="d") --> <QuerySet [<Path: DS>]>
+6- Path'i DS olan öğrenciler. --> p1[0].students.all() #  [<Student: s ss>,<Student: Memal cemal>]
+7- 6'ncı md. deki students child field'de related_name='students' properties verildiği için kullanıldı.
+8- first_name içerisinde e karakteri bulunan öğrenciler. --> p[0].students.filter(first_name__contains="e") # <QuerySet [<Student: Memal cemal>]>
 
 PYTHON'DA RESİMLERLE İŞLEM YAPILACAKSA AŞAĞIDAKİ KÜTÜPHANEYİ KUR.
 pip install Pillow 
@@ -135,11 +147,11 @@ detay-->https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 '''
 on_delete properties:
-    # CASCADE -> if primary deleted, delete foreing too.
+    # CASCADE -> if primary deleted, delete foreing too. Field silindiğinde Tablonunda silinmesini istiyorsak.
     # SET_NULL -> if primary deleted, set foreign to NULL. (null=True)
     # SET_DEFAULT -> if primary deleted, set foreing to DEFAULT value. (default='Value')
     # DO_NOTHING -> if primary deleted, do nothing.
-    # PROTECT -> if foreign is exist, can not delete primary.
+    # PROTECT -> if foreign is exist, can not delete primary. Silinecek field'in bağlı olduğu başka tablolarda varsa önce önce onları silmek gerekir.
 '''
 
 .ENV DEKİ KEYLERİ VE ID'LERI OKUYABİLMEK İÇİN AŞAĞIDAKİ PAKETİ YÜKLE
@@ -155,3 +167,7 @@ sonra main/settings/INSTALLED_APPS'e ekle.
 'rest_framework',
 serializers' kullanabilmek için REST_FRAMEWORK'ü yüklemelisin.
 https://www.django-rest-framework.org/
+
+****
+pip install module_name -> modül yükle
+pip install -r filename -> dosyadaki modülleri yükle.

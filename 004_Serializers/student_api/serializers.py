@@ -10,16 +10,18 @@ from .models import Student, Path
 # Serializers ile DB'den Frontend'e veya Frontend'den DB'e veri aktarırken veri ekleme ve çıkarma işlemi yapabiliyoruz. Ancak DB'e kaydetme işleminde model'de hangi Field varsa onları ekleyebiliyoruz.
 
 
-#? StudentSerializer'i aşağıda mantığını anlamak için ilkel yöntemle oluşturduk. Bu ilkel yöntemde oluşturduğumuzda create ve update metodlarınıda oluşturmamız gerekli.
+#? StudentSerializer'i aşağıda mantığını anlamak için ilkel yöntemle oluşturduk. Bu ilkel yöntemde oluşturduğumuzda create ve update metodlarınıda oluşturmamız gerekli. atribute'ların türünü ise model ile uyumlu yapmak gerekli yoksa çalışmaz.
 # class StudentSerializer(serializers.Serializer):
 #     first_name = serializers.CharField(max_length=50)
 #     last_name = serializers.CharField(max_length=50)
 #     number = serializers.IntegerField()
 #     age = serializers.IntegerField()
+#? atribute'ların türünü ise model ile uyumlu yapmak gerekli yoksa çalışmaz.
     
     
 #     def create(self, validated_data):
 #         return Student.objects.create(**validated_data)
+#? **validated_data --> Yukarıdaki field'lerin açılmış hali.
 
 #     def update(self, instance, validated_data):
 #         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -43,8 +45,8 @@ class StudentSerializer(serializers.ModelSerializer):
     # Sonrasında metod field yazarak frontend'e gönderebiliyorum. metodun başında get unutulmamalı.
 
     born_year = serializers.SerializerMethodField() # read only.
-    path = serializers.StringRelatedField()  # read only. Sadece okunabilir. StringRelatedField --> string __str__de olanı döndürür. Bu metod yazılmadan çağırıldığında id döner. 
-    # path_id = serializers.IntegerField() # not read only.
+    path = serializers.StringRelatedField()  # read only. Sadece okunabilir. StringRelatedField --> string model/ __str__de olanı döndürür. Bu metod yazılmadan çağırıldığında id döner. 
+    # path_id = serializers.IntegerField() # not read only. Böyle Push yapılabilir. çünkü not read only. 
 
     class Meta:
         model = Student
