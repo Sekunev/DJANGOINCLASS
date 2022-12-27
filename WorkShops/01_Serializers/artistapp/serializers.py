@@ -33,22 +33,9 @@ class SongSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "artist", "album", "lyric"]
 
 class SongLyricSerializer(serializers.ModelSerializer):
-    items = SongSerializer(many=True, read_only=True)
+    songs = SongSerializer(many=True)
 
     class Meta:
         model = Lyric
-        fields = ['title', 'content']
+        fields = "__all__"
 
-"""
-class ToDoItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ToDoItem
-        fields = ['text', 'is_completed']
-
-class ToDoListSerializer(serializers.ModelSerializer):
-    items = ToDoItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = ToDoList
-        fields = ['title', 'items']
-"""

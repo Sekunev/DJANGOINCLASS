@@ -30,6 +30,9 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 DJANGO KURULUMU.
 pip install django
 
+DJANGO İLE RESTFRAMEWORK KURULUMU.
+pip install djangorestframework
+
 PİP GÜNCEL DEĞİL WARNİNGİ SONRASI PİP GÜNCELLEME.
 python -m pip install --upgrade pip
 
@@ -86,7 +89,7 @@ python manage.py createsuperuser
 6.url'nin sonuna admin yazarak login sayfasina gecin
 7.user ve password bilginizle giris yapin
 
-APP'İ ADMIN USERDE GÖRMEK İÇİN
+APP/MODEL'İ ADMIN USERDE GÖRMEK İÇİN
 app/admin.py içerisinde import et ve tanımla.
 from .models import Student
 admin.site.register(Student)

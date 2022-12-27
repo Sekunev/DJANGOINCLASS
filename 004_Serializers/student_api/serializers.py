@@ -60,7 +60,8 @@ class StudentSerializer(serializers.ModelSerializer):
         return current_time.year - obj.age
 
 
-    
+#! Nested Serializer
+
 class PathSerializer(serializers.ModelSerializer):
     students = StudentSerializer(many=True)
     # Bu path'de (Fullstack) birden fazla student olacağı için  many=True yazdık. Böylece Hangi patte hangi öğrenciler olduğunu görmüş olduk.

@@ -3,14 +3,19 @@ from django.http import HttpResponse
 from .models import Artist, Album, Song
 from .serializers import ArtistSerializer, AlbumSerializer, SongSerializer, LyricSerializer, SongLyricSerializer
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
+
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import mixins, GenericAPIView,ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
 def home(request):
     return HttpResponse('This is my Page..')
 
+#***! artist_api  ['GET', 'POST'] ***/
 @api_view(['GET', 'POST'])
 def artist_api(request):
     if request.method == 'GET':
@@ -27,6 +32,7 @@ def artist_api(request):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#***! album_api  ['GET', 'POST'] ***/
 @api_view(['GET', 'POST'])
 def album_api(request):
     if request.method == 'GET':
@@ -42,6 +48,7 @@ def album_api(request):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#***! song_api  ['GET', 'POST'] ***/
 @api_view(['GET', 'POST'])
 def song_api(request):
     if request.method == 'GET':
@@ -58,15 +65,8 @@ def song_api(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #! /*** DETAİL TEK OBJEYE YAPILAN İŞLEMLER  ***/
-
 @api_view(['GET'])
 def artist_detail(request, pk):
-    # pk : Çağırılan objenin id'si. Primary key.
-    # student = Student.objects.get(id=pk)
-    # Student tablosundaki id'si pk'ya eşit olan
-    # Yukarıdaki yöntemi uyguladığımızda id'si olmayan bir sorgu yapıldığında hata alırız. Bunu önlemek için 2 yöntem var.
-    # 1.si try except
-    #! 2. get_object_or_404 yöntemi. Bu yöntem id'si x olanı çek yoksa 404 not found hatası ver demek oluyor.
     artist = get_object_or_404(Artist, id=pk)
     serializer = ArtistSerializer(artist)
     # tek eleman olduğu için many=True yazmadık.
@@ -95,6 +95,8 @@ def artist_delete(request, pk):
     }
     return Response(message)
 
+#! /*** DETAİL TEK OBJEYE YAPILAN İŞLEMLER  BİRLEŞTİRİLMİŞ***/
+
 @api_view(['GET', 'DELETE', 'PUT'])
 def artist_get_put_delete(request, pk):
     artist = get_object_or_404(Artist, id=pk)
@@ -117,10 +119,110 @@ def artist_get_put_delete(request, pk):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# * ================================
+# todo      CLASS BASED VIEWS
+# * ================================
 
-@api_view(['GET'])
-def SongLyric(request):
-        songs = Song.objects.all()
-        serializer = SongLyricSerializer(songs, many=True)
-        print(serializer.data)
+class ArtistListCreate(APIView):
+    def get(self, request):
+        artists = Artist.objects.all()
+        serializer = ArtistSerializer(artists, many=True)
         return Response(serializer.data)
+    def post(self, request):
+        serializer = ArtistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            data = {
+                "message": f"Album {serializer.validated_data.get('name')} saved successfully!"}
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#! /*** DETAİL TEK OBJEYE YAPILAN İŞLEMLER  ***/
+
+class ArtistDetail(APIView):
+    def get_obj(self, pk):
+        return get_object_or_404(Artist, id=pk)
+    def get(self, request, pk):
+        artist = self.get_obj(pk)
+        serializer = ArtistSerializer(artist)
+        return Response(serializer.data)
+    def put(self, request, pk):
+        artist = self.get_obj(pk)
+        serializer = ArtistSerializer(artist, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            message = {
+                "message" : "update Artist"
+            }
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk):
+        artist = self.get_obj(pk)
+        artist.delete()
+        message = {
+            "message": 'Artist deleted succesfully....'
+        }
+        return Response(message)
+
+# * ================================
+# todo      GENERIC API VIEWS and Mixins
+# * ================================
+
+class ArtistGAV(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+    def get(self, request, *arg, **kwargs):
+        return self.list(request, *arg, **kwargs)
+    def post(self, request, *arg, **kwargs):
+        return self.create(request, *arg, **kwargs)
+
+class StudentDetailGAV(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+    def get(self, request, *arg, **kwargs):
+        return self.retrieve(request, *arg, **kwargs)
+
+    def put(self, request, *arg, **kwargs):
+        return self.update(request, *arg, **kwargs)
+
+    def delete(self, request, *arg, **kwargs):
+        return self.destroy(request, *arg, **kwargs)
+
+#* #################### 
+#! 4- CONCRETE VIEWS  
+#* ####################
+
+class ArtistCV(ListCreateAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+class ArtistDetailCV(RetrieveUpdateDestroyAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+#* #################### 
+#! 5- VIEWSET  (@action)  
+#* ####################
+
+class ArtistMVS(ModelViewSet):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+    @action(detail=False, methods=["GET"])
+    def artist_count(self, request):
+        count = {
+            "Artist-count" : self.queryset.count()
+        }
+        return Response(count)
+
+class ArtistMVS(ModelViewSet):
+    queryset = Song.objects.all()
+    serializer_class = ArtistSerializer
+
+    @action(detail=True)
+    def artist_names(self, request, pk=None):
+        path = self.get_object()
+        artists = path.artist.all()
+        return Response([i.first_name for i in artists])
