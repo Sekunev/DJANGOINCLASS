@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import Artist, Album, Song
-from .serializers import ArtistSerializer, AlbumSerializer, SongSerializer, LyricSerializer, SongLyricSerializer
+from .serializers import ArtistSerializer, AlbumSerializer, SongSerializer, LyricSerializer
 
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
@@ -206,6 +206,7 @@ class ArtistDetailCV(RetrieveUpdateDestroyAPIView):
 #! 5- VIEWSET  (@action)  
 #* ####################
 
+# artist sayısı
 class ArtistMVS(ModelViewSet):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
@@ -217,12 +218,16 @@ class ArtistMVS(ModelViewSet):
         }
         return Response(count)
 
-class ArtistMVS(ModelViewSet):
-    queryset = Song.objects.all()
-    serializer_class = ArtistSerializer
+
+#! Albumlerdeki şarkılar.
+class AlbumMVS(ModelViewSet):
+    queryset = Album.objects.all()
+    serializer_class = AlbumSerializer
+    print(queryset)
 
     @action(detail=True)
-    def artist_names(self, request, pk=None):
-        path = self.get_object()
-        artists = path.artist.all()
-        return Response([i.first_name for i in artists])
+    def song_names(self, request, pk=id):
+        album = self.get_object()
+        songss = album.songs.all()
+        print(songss)
+        return Response([i.name for i in songss])

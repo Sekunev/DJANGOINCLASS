@@ -19,11 +19,13 @@ from .views import (
     ArtistCV,
     ArtistDetailCV,
     #! VIEWSET
-    ArtistMVS
+    ArtistMVS,
+    AlbumMVS
     )
 
 router = routers.DefaultRouter()
 router.register("artist", ArtistMVS)
+router.register("album", AlbumMVS)
 
 urlpatterns = [
     path('', home),
@@ -42,8 +44,8 @@ urlpatterns = [
     # path('artist/', ArtistCV.as_view()),
     # path('artist/<int:pk>', ArtistDetailCV.as_view()),
     #! FOR VIEWSET
-    path("", include(router.urls)),
+    path('', include(router.urls)),
 
-    path('album/', album_api),
-    path('song/', song_api),
+    # path('album/', album_api),
+    # path('song/', song_api),
 ]

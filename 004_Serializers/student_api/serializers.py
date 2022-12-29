@@ -51,7 +51,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         # fields = "__all__"
-        fields = ["first_name", "last_name","number", "age", "born_year", "path", "path_id"] # sadece .. kadar field'e getir.
+        fields = ["first_name", "last_name","number", "age", "born_year", "path", "path_id"] # Dönen API de gösterilecek field'ler. Burada sadece .. kadar field'e getir.
         # exclude = ["number"]  # number dışındaki hepsi.
 
     def get_born_year(self, obj):

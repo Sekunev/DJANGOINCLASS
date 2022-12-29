@@ -174,3 +174,16 @@ https://www.django-rest-framework.org/
 ****
 pip install module_name -> modül yükle
 pip install -r filename -> dosyadaki modülleri yükle.
+
+*****
+pip install django-cors-headers
+
+pip install Faker
+
+
+pip uninstall djangorestframework-filters
+pip uninstall django-filter
+
+sonra
+
+pip install django-filter

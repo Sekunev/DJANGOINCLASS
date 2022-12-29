@@ -1,0 +1,79 @@
+RANDON VERİ ÜRETİMİ İÇİN;
+https://faker.readthedocs.io/en/master/
+1- pip install Faker  --> Kur.
+2- Proje içerisinde faker.py dosyası oluştur.
+3- Dosya içerisine foknsiyon yaz.
+
+"""from .models import Path, Student
+from faker import Faker
+# Rastgele veri üreten kütüphane.
+def run():
+    '''
+        # https://faker.readthedocs.io/en/master/
+        $ pip install faker # install faker module
+        python manage.py flush # delete all exists data from db. dont forget: createsuperuser
+        python manage.py shell
+        from student_api.faker import run
+        run()
+        exit()
+    '''
+    fake = Faker(['tr-TR'])
+    paths = (
+        "FullStack",
+        "DataScience",
+        "AwsDevops",
+        "CyberSec",
+    )
+    for path in paths:
+        new_path = Path.objects.create(path_name = path)
+        for _ in range(50):
+            Student.objects.create(path = new_path, first_name = fake.first_name(), last_name = fake.last_name(), number = fake.pyint())
+    print('Finished')"""
+
+4- içerisindeki fonksiyonu shell'de de çalıştırılabilir.
+
+PAGINATION
+https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
+1- PageNumberPagination
+2- LimitOffsetPagination
+3- CursorPagination
+
+-Pagination Kullanımı: (2 çeşit Kullanım mevcut.)
+a- Global: Settings  dosyasına aşağıdaki komutu yapıştır.
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
+}
+#** Her sayfada 20 sutun olacak şekilde sayfalara böl. 
+# Bu işlem sonrası veriler result içerisinde dönmeye başlar. ve aşağıdaki ilave objeler sunulur.
+ "count": 200,
+    "next": "http://127.0.0.1:8000/api/student/?page=2",
+    "previous": null,
+    "results": [...]
+
+b- Custom Pagination: 
+ 1- App altında Pagination.py isimli bir dosya oluştur.
+ 2- import et ve fonksiyonu yaz.
+
+ from rest_framework.pagination import (
+    PageNumberPagination,
+    LimitOffsetPagination,
+    CursorPagination
+)
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 5 # Her sayfada 5 adet.
+    page_query_param = 'sayfa' # URL'de page yerine sayfa yazıyor.
+
+class CustomLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 10
+    limit_query_param = 'adet'
+    offset_query_param = 'baslangic'
+
+class CustomCursorPagination(CursorPagination):
+
+    cursor_query_param = 'imlec'
+    page_size = 10
+    otdering = '-id'
+
+3- view'de ilgili viev içerisinde import ederek kullan (serializer_class altında.).
+# pagination_class=CustomPageNumberPagination
