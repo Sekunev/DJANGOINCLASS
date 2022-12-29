@@ -226,8 +226,8 @@ class AlbumMVS(ModelViewSet):
     print(queryset)
 
     @action(detail=True)
-    def song_names(self, request, pk=id):
+    def song_names(self, request, pk=None):
         album = self.get_object()
         songss = album.songs.all()
         print(songss)
-        return Response([i.name for i in songss])
+        return Response([i.songs.name for i in songss])

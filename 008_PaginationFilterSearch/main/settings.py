@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'student_api',
     # thirtParty App
     'rest_framework',
-    'django_filters'
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -131,14 +131,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    #* Her sayfada 20 sutun olacak şekilde sayfalara böl. 
+    #* Her sayfada 20 satır olacak şekilde sayfalara böl. 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE': 20,
+    #* Her sayfada 20 satır olacak şekilde sayfalara böl. 
+    #* limit=30(sayfada gösterilecek satır sayısı. Defaultunu 'PAGE_SIZE'dan alıyor.)&
+    #* offset= cursorun bulunduğu yer. yani limit=20 ofset 10 ise; sayfada 10.  satırdan itibaren 20 satır gösterilir.
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 30,
+    # 'PAGE_SIZE': 20,
+    #* CursorPagination kullanılabilmesi için modelde created isimli bir field oluşturduk. Cursor Nerde kalmışsa oradan devam eder.
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.CursorPagination',
     # 'PAGE_SIZE': 30,
+    #* Filtreleme için yapılacaklar. DEFAULT_FILTER_BACKENDS'ler ayrı ayrı tanımlanınca birbirini eziyor. "," ile birleştirilerek yapılabilir.
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
-    # 'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter'],
-    # 'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.OrderingFilter'],
+    # 'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
 }

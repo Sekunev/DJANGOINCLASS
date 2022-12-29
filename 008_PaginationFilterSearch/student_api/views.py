@@ -264,15 +264,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 class StudentMVS(ModelViewSet):
-    
+
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    pagination_class=CustomPageNumberPagination
+    # pagination_class= CustomPageNumberPagination
     # pagination_class=CustomLimitOffsetPagination
     # pagination_class=CustomCursorPagination
-    # filter_backends = [DjangoFilterBackend,SearchFilter, OrderingFilter]
-    # filterset_fields = ['id', 'first_name', 'last_name']
-    # search_fields = ['first_name', 'last_name'] # 'first_name', 'last_name' fieldlerine göre arama yapar.
+
+    filter_backends = [DjangoFilterBackend,SearchFilter, OrderingFilter]
+    filterset_fields = ['first_name'] #* Birebir eşleşme olmazsa boş döner.
+    search_fields = ['^first_name'] #* baş harfine göre arama yapmak için, 'first_name', 'last_name' fieldlerine göre arama yapar. '^' işareti olmadığında first_name içerisinde belirtilen karakteri arar. işaret konulduğunda belirtilen karakterle başlayan datalar döndürülür.
+    ordering_fields = ['id']  #* filter boxta hangi seçenekler çıksın istiyorsanız onu yazıyorsunuz
+    ordering = ['-id']  #* default olarak ilk açıldığında buraya yazdığımıza göre sıralıyor. (-) Tersten.
     
     @action(detail=False, methods=["GET"])
     def student_count(self, request):
@@ -281,7 +284,7 @@ class StudentMVS(ModelViewSet):
         }
         return Response(count)
     
-    
+
 class PathMVS(ModelViewSet):
 
     queryset = Path.objects.all()

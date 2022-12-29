@@ -41,8 +41,14 @@ https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
 -Pagination Kullanımı: (2 çeşit Kullanım mevcut.)
 a- Global: Settings  dosyasına aşağıdaki komutu yapıştır.
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20
+    # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 30,
+    
+    # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 30,
+    
+    # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.CursorPagination',
+    # 'PAGE_SIZE': 30, # Defaultu Tersten sıralamak.
 }
 #** Her sayfada 20 sutun olacak şekilde sayfalara böl. 
 # Bu işlem sonrası veriler result içerisinde dönmeye başlar. ve aşağıdaki ilave objeler sunulur.
@@ -65,15 +71,36 @@ class CustomPageNumberPagination(PageNumberPagination):
     page_query_param = 'sayfa' # URL'de page yerine sayfa yazıyor.
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 10
-    limit_query_param = 'adet'
-    offset_query_param = 'baslangic'
+    default_limit = 10 # Her sayfada 10 adet.
+    limit_query_param = 'adet' # URL satısında limit yerine adet yazar.
+    offset_query_param = 'baslangic' # URL satısında offset yerine baslangic yazar.
 
 class CustomCursorPagination(CursorPagination):
 
-    cursor_query_param = 'imlec'
-    page_size = 10
-    otdering = '-id'
+    cursor_query_param = 'imlec'  # URL satırında cursor yerine imleç yazar.
+    page_size = 10  # 1 sayfada gösterilecek sutun sayısı
+    ordering = "-id" # id'ye göre tersden sıralama.
 
 3- view'de ilgili viev içerisinde import ederek kullan (serializer_class altında.).
 # pagination_class=CustomPageNumberPagination
+
+4- CursorPagination kullanılabilmesi için modelde created isimli bir field oluşturduk. created'in sebebi CursorPagination sourccode'unda default değerinden Cursor Nerde kalmışsa oradan devam eder.
+
+FİLTER
+a- Globalde:
+pip install django-filter  --> yükle
+INSTALLED_APPS = ['django_filters']  --> settings.py ye ekle.
+REST_FRAMEWORK = {'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter']
+} --> REST_FRAMEWORK ekle.
+filterset_fields = ['field_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan views'a ekle.
+
+b- CustomFilter --> views içerisinde.
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter  --> import et
+filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] --> Hangi filtreleme yöntemini istiyorsan seç.
+filterset_fields = ['first_name', 'last_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan. Birebir eşleşme olmazsa boş döner.
+
+search_fields = ['^first_name'] -->  baş harfine göre arama yapmak için, 'first_name', 'last_name' fieldlerine göre arama yapar. '^' işareti olmadığında first_name içerisinde belirtilen karakteri arar. işaret konulduğunda belirtilen karakterle başlayan datalar döndürülür.
+ordering_fields = ['id']  --> filter boxta hangi seçenekler çıksın istiyorsanız onu yazıyorsunuz
+ordering = ['-id']  --> default olarak ilk açıldığında buraya yazdığımıza göre sıralıyor. (-) Tersten.
