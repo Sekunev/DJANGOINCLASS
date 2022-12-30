@@ -269,13 +269,15 @@ class StudentMVS(ModelViewSet):
     serializer_class = StudentSerializer
 #?permission ile bu endpointe kim ulaşabilir onu tanımlıyooruz.
     #* Authenticat olan herkes CRUD yapabilir
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     
     #* sadece admin olan CRUD yapabilir
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     
-    #* admin olan herşeyi yapar, olmayan sadece GET(read) yapar.
+    #* Authenticat olan herşeyi yapar, olmayan (sadece) GET(read) yapar.
     # permission_classes = [IsAuthenticatedOrReadOnly]
+
+
     pagination_class=CustomPageNumberPagination
     # pagination_class=CustomLimitOffsetPagination
     # pagination_class=CustomCursorPagination

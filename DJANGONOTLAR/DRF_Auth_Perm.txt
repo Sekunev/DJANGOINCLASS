@@ -6,6 +6,7 @@ Global ve yerel Yapılabilir.
 
 1- Global için;
 https://www.django-rest-framework.org/api-guide/authentication/
+
 -
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -14,15 +15,43 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 } --> settings.py'a ekle.
+
 -
 from rest_framework.permissions import  IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly  --> views'e ihtiyacın olanları import et.
-- aşağıda permission ile bu endpointe kim ulaşabilir onu tanımlıyooruz.
+
+- aşağıda permission ile bu endpointe kim ulaşabilir onu tanımlıyoruz.
 #* Authenticat olan herkes CRUD yapabilir
 # permission_classes = [IsAuthenticated]
 
 #* sadece admin olan CRUD yapabilir
 permission_classes = [IsAdminUser]
 
-#* admin olan herşeyi yapar, olmayan sadece GET(read) yapar.
+#* Authenticat olan herşeyi yapar, olmayan (sadece) GET(read) yapar.
 # permission_classes = [IsAuthenticatedOrReadOnly] --> views'e class içerisine ihtiyacın olanı sealizers_class altına yaz.
 
+Kullanıcının admin user olup olmadığını staff status'dan anlayabilirsin.
+
+TOKEN Authentication
+Token mantığı --> Her kullanıcı için bir token oluşturuluyor. Kullanıcı Login olduğunda oluşturulup Logout olduğunda silinir.
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+} --> settings.py'a ekle.
+
+INSTALLED_APPS = [
+    ...
+    'rest_framework.authtoken'
+]
+
+- Yukarıdaki işlemler sonucu tokenlerin tutulacağı bir tablo oluşturulması gerekir bunun için 
+manage.py migrate  --> Çalıştır.
+- Admin panelden manuel token oluştur.
+- Auth: Token Tokennumarası  --> Postman/Headers Token'u Auth (oluştur) keyinin Valuesi olarak Token Tokennumarası şeklinde yaz.arada boşluk var unutma.
+
+Authentication işlemlerinde CUSTOM
+(# https://www.django-rest-framework.org/api-guide/validators/)
+Dafault olarak Django authentication işleminde email'i zorunlu tutmuyor. Biz Bu email'i zorunlu ve uniq olsun istiyoruz. O zaman bir sealizers.py oluşturup 
+from django.contrib.auth.models import User 'dan import ettiğimiz user.model'i costum ederek bu amacımızı gerçekleştiriyoruz. Detaylar (009. Derste)
