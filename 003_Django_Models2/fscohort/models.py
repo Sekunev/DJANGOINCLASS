@@ -27,7 +27,7 @@ class Student(models.Model):
         #! Tersden sıralama için field önüne "-"
         verbose_name = 'Öğrenci'
         verbose_name_plural = 'Öğrenciler'
-        db_table= "Ögrenciler" # Tablo ismini değiştir.
+        db_table = "Ögrenciler" # Tablo ismini değiştir.
 
 #! auto_now : Nesne her kaydedildiğinde alanı otomatik olarak şimdi olarak ayarlar.
 

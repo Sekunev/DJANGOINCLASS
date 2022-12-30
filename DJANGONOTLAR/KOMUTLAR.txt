@@ -25,15 +25,16 @@ source env/bin/activate
 
 AKTİF HALİ PASİF HALE ÇEVİRMEK İÇİN.
 deactivate
-
+django
 AKTİF ETMEDE SORUN YAŞARSAN AŞAĞIDAKİ KOMUTU ÇALIŞTIR.
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+DJANGO İLE RESTFRAMEWORK KURULUMU.
+pip install djangorestframework
 
 DJANGO KURULUMU.
 pip install django
 
-DJANGO İLE RESTFRAMEWORK KURULUMU.
-pip install djangorestframework
 
 PİP GÜNCEL DEĞİL WARNİNGİ SONRASI PİP GÜNCELLEME.
 python -m pip install --upgrade pip
@@ -62,6 +63,7 @@ APP OLUŞTURMA
 python manage.py startapp (appname)
 (appname)appı oluştrduk)(bunu yaptıktan sonra proje dizinine gidip settings.py e girip
 installed appse appimizi tanıtmamız gerekiyor)
+ django-admin startapp (appname) --> alternatif.
 
 SERVER ÇALIŞTIR
 python manage.py runserver
@@ -174,6 +176,5 @@ serializers' kullanabilmek için REST_FRAMEWORK'ü yüklemelisin.
 https://www.django-rest-framework.org/
 
 ****
-pip install django-cors-headers
 
-python -m pip install django-cors-headers
+

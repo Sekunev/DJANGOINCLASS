@@ -1,0 +1,28 @@
+Authentication => bir kişinin ya da bir şeyin iddia ettiği olduğunu doğrulamak için yapılan işlemdir. Bu genellikle bir kullanıcı adı ve parola gibi kimlik bilgileri ya da bir parmak izi veya yüz tanıma gibi biyometrik veriler kullanılarak yapılır.
+
+Authorization =>  doğrulanmış kullanıcının izinlerine göre belirli kaynaklara veya eylemlere erişimi verme veya reddetme işlemidir. Örneğin, doğrulanmış bir kullanıcının belirli belgeleri okumaya izin verilmiş olabilir, ancak düzenleme veya silme yetkisi olmayabilir.
+
+Global ve yerel Yapılabilir.
+
+1- Global için;
+https://www.django-rest-framework.org/api-guide/authentication/
+-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+} --> settings.py'a ekle.
+-
+from rest_framework.permissions import  IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly  --> views'e ihtiyacın olanları import et.
+- aşağıda permission ile bu endpointe kim ulaşabilir onu tanımlıyooruz.
+#* Authenticat olan herkes CRUD yapabilir
+# permission_classes = [IsAuthenticated]
+
+#* sadece admin olan CRUD yapabilir
+permission_classes = [IsAdminUser]
+
+#* admin olan herşeyi yapar, olmayan sadece GET(read) yapar.
+# permission_classes = [IsAuthenticatedOrReadOnly] --> views'e class içerisine ihtiyacın olanı sealizers_class altına yaz.
+

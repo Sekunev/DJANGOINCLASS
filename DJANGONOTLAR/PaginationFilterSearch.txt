@@ -42,13 +42,22 @@ https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
 a- Global: Settings  dosyasına aşağıdaki komutu yapıştır.
 REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 30,
+    # 'PAGE_SIZE': 2,
     
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 30,
+    # 'PAGE_SIZE': 5,
     
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.CursorPagination',
-    # 'PAGE_SIZE': 30, # Defaultu Tersten sıralamak.
+    # 'PAGE_SIZE': 4, # default'u testen sıralamak.
+    
+    # filter
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    
+    # search
+    # 'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter'],
+
+    # filter + search + ordering
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
 }
 #** Her sayfada 20 sutun olacak şekilde sayfalara böl. 
 # Bu işlem sonrası veriler result içerisinde dönmeye başlar. ve aşağıdaki ilave objeler sunulur.
@@ -90,8 +99,9 @@ FİLTER
 a- Globalde:
 pip install django-filter  --> yükle
 INSTALLED_APPS = ['django_filters']  --> settings.py ye ekle.
-REST_FRAMEWORK = {'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter']
+REST_FRAMEWORK = {
+    # filter + search + ordering
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
 } --> REST_FRAMEWORK ekle.
 filterset_fields = ['field_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan views'a ekle.
 
