@@ -53,5 +53,17 @@ manage.py migrate  --> Çalıştır.
 
 Authentication işlemlerinde CUSTOM
 (# https://www.django-rest-framework.org/api-guide/validators/)
-Dafault olarak Django authentication işleminde email'i zorunlu tutmuyor. Biz Bu email'i zorunlu ve uniq olsun istiyoruz. O zaman bir sealizers.py oluşturup 
+- Dafault olarak Django authentication işleminde email'i zorunlu tutmuyor. Biz Bu email'i zorunlu ve uniq olsun istiyoruz. O zaman bir sealizers.py oluşturup 
 from django.contrib.auth.models import User 'dan import ettiğimiz user.model'i costum ederek bu amacımızı gerçekleştiriyoruz. Detaylar (009. Derste)
+
+- Serializer oluşturduktan sonra wiews'i oluşturuyoruz. Detaylar dosyada.
+
+_ Yukardaki işlemler yapıldı ama token ürtilmedi Token üretmenin farkı yolları mevcut. https://www.django-rest-framework.org/api-guide/authentication/
+
+-By exposing an api endpoint: Bu yöntemde login endpointi oluşturuyor. Kullanıcı Username ve password'unu giriyor ve bir post işlemi gerçekleşiyor. DB'e token olup olmadığını kontrol ediyor. token varsa Response olarak varolan token dönüyor. Yoksa oluşturup response ediyor. Bunu için Bir import ve path oluşturuyoruz. Sonrasında Bu kullanıcının yaptığı her istek bu Token ile gerçekleşecek.
+
+from rest_framework.authtoken import views
+path('login/', views.obtain_auth_token)
+
+- Register olunduğunda response ile birlikte token'inde dönerek login sayfasına gitmeden direk auth olabilmek için:
+- generic/mixins'den create metodunu override yapıyoruz. respose'a token'i de dahil ediyoruz. Bu işlemler view.py'da yapılıyor.
