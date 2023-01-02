@@ -14,4 +14,4 @@ urlpatterns = [
     path('', include(router.urls))
 ]
     #! Alternatif ModelViewSet
-urlpatterns += router.urls
+#? urlpatterns += router.urls

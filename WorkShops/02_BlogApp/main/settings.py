@@ -42,9 +42,11 @@ INSTALLED_APPS = [
 
     # myApp
     'blogapp',
+    'user',
     # thirt party
     'rest_framework',
-    'django_filters'
+    'django_filters',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -141,5 +143,11 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 30, # Defaultu Tersten sıralamak.
 
 
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
+    
+#! TokenAuthentication
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
+]
+
 }

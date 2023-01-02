@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 class Category(models.Model):
-
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -13,8 +12,6 @@ class Category(models.Model):
         verbose_name = 'Category'
 
         
-
-
 class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
@@ -29,3 +26,7 @@ class Post(models.Model):
     class Meta:
         ordering= ('id',) # Tuple olduğu için ","
         verbose_name = 'Post'
+
+
+
+
