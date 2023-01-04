@@ -32,7 +32,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 DJANGO İLE RESTFRAMEWORK KURULUMU.
 pip install djangorestframework
 
-DJANGO KURULUMU.
+SADECE DJANGO KURULUMU.
 pip install django
 
 
@@ -177,4 +177,13 @@ https://www.django-rest-framework.org/
 
 ****
 
+PostgreSQL setup
+PYTHON'UN POSTGRES ile çalışmasını sağlamak için;
+pip install psycopg2
 
+
+DOKUMANTASYON OLUŞTURMAK İÇİN(swagger otomatik API dokumantasyon hazırlayan kutuphane)
+pip install drf-yasg
+
+HATALARI TAKİP ETMEK İÇİN
+pip install django-debug-toolbar

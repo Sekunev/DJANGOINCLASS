@@ -1,0 +1,11 @@
+SECRET_KEY=i6^caewmqr75kytna($75zr&z7_3oy)02sj-bv2o&q#@dp+kmw
+DEBUG=True
+
+ENV_NAME=prod# 
+
+SQL_DATABASE=flight# pgAdmin'de oluşturduğumuz database adı
+SQL_USER=postgres# pgAdmin deki kullanıcı adı
+SQL_PASSWORD=2891# pgAdmin'e girdiğimiz şifre
+SQL_HOST=localhost# burası aynı kalacak
+SQL_PORT=5432#  pgAdmindeki default port. eğer değiştirmediysek bu kalacak
+# DJANGO_LOG_LEVEL=INFO
