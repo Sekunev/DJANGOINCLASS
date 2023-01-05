@@ -8,7 +8,7 @@ class RegisterView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
-    # Register olunduğunda response ile birlikte token'inde dönerek login sayfasına gitmeden direk auth olabilmek için:
+    # Register olunduğunda response ile birlikte token'inde dönerek login sayfasına gitmeden direk auth olabilmek için: OOP'den hatırlayalım bir metod kendi içerisinde varsa parent'e gitmez.
     # generic/mixins'den override yapıyoruz. respose'a token'i de dahil ediyoruz.
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -16,7 +16,7 @@ class RegisterView(CreateAPIView):
         token = Token.objects.create(user_id = response.data["id"]) # database'de kullanıcı id'si user_id şeklinde kayıtlı olduğu için.
         response.data['token'] = token.key # response.data'ya tken elemanı ekledik.
         # print(response.data) # {'id': 10, 'username': 'sssaaaaaa', 'email': 'sssaakaaa@s.com', 'first_name': 'aa', 'last_name': 'aaa', 'token': 'd372d717c1383f2fade25a923c659ce7e60b9c4c'}
-        # return response
+        return response
 
 # ! Override: bir classın bir alt sınıfındaki bir yöntem tanımında kullanılır ve bu yöntemin bir üst sınıfındaki aynı adlı yöntemi geçersiz kılma amacıyla tasarlandığını gösterir. 
 # Aşağıda create metodunun override edilmemiş hali bulunuyor.

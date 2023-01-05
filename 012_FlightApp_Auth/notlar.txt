@@ -1,0 +1,8 @@
+Bu desin notları DRF_Auth klasörü içerisinde.
+
+BRD(Business requirements documents) -  ERD(Entity relationship diagram) --> Proje isterlerinin bulunduğu dökuman
+Swagger(Document + Test) --> Otomatik oluşan dökumantasyon.
+Debug_Toolbar --> Ekran sağ köşede bulunan tool
+Logger --> işlem geçmişimizi tutmaya yarayan Toll.
+PostgreSQL
+dev-prod env

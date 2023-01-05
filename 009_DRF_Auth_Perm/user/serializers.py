@@ -35,6 +35,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
         return data
 
+    #? ModelSerializer kullanınca create metodu yazmaya gerek yok aslında fakat, User model içinde olmayan bir field 
+    #? (password2) kullandığımız için creat metodunu override etmek gerekli aynı zamanda password'u hash'leyerek kaydedeceğiz.;
+
     def create(self, validated_data):
         print(validated_data)  # {'username': 'fffs', 'email': 'fffd@s.com', 'first_name': 'aa', 'last_name': 'aaa', 'password': 'aa111122a', 'password2': 'aa111122a'}
         validated_data.pop('password2') # validated_data'dan password2'yi sil.

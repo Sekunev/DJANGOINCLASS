@@ -53,13 +53,15 @@ manage.py migrate  --> Çalıştır.
 
 Authentication işlemlerinde CUSTOM
 (# https://www.django-rest-framework.org/api-guide/validators/)
-- Dafault olarak Django authentication işleminde email'i zorunlu tutmuyor. Biz Bu email'i zorunlu ve uniq olsun istiyoruz. O zaman bir sealizers.py oluşturup 
+- Dafault olarak Django authentication işleminde email'i zorunlu tutmuyor. Biz Bu email'i zorunlu ve uniq olsun istiyoruz. O zaman bir sealizers.py oluşturup içerisinde RegisterSerializer() oluşturuyoruz. 
 from django.contrib.auth.models import User 'dan import ettiğimiz user.model'i costum ederek bu amacımızı gerçekleştiriyoruz. Detaylar (009. Derste)
 
 - Serializer oluşturduktan sonra wiews'i oluşturuyoruz. Detaylar dosyada.
 
 _ Yukardaki işlemler yapıldı ama token ürtilmedi Token üretmenin farkı yolları mevcut. https://www.django-rest-framework.org/api-guide/authentication/
 
+1- Yöntem: obtain_auth_token
+https://www.django-rest-framework.org/api-guide/authentication/#django-rest-auth-dj-rest-auth
 -By exposing an api endpoint: Bu yöntemde login endpointi oluşturuyor. Kullanıcı Username ve password'unu giriyor ve bir post işlemi gerçekleşiyor. DB'e token olup olmadığını kontrol ediyor. token varsa Response olarak varolan token dönüyor. Yoksa oluşturup response ediyor. Bunu için Bir import ve path oluşturuyoruz. Sonrasında Bu kullanıcının yaptığı her istek bu Token ile gerçekleşecek.
 
 from rest_framework.authtoken import views
@@ -67,3 +69,69 @@ path('login/', views.obtain_auth_token)
 
 - Register olunduğunda response ile birlikte token'inde dönerek login sayfasına gitmeden direk auth olabilmek için:
 - generic/mixins'den create metodunu override yapıyoruz. respose'a token'i de dahil ediyoruz. Bu işlemler view.py'da yapılıyor.
+
+2- Yöntem: dj-rest-auth Burdan aşağıdaki kısım. 012_flight dersine ait. detaylar orada.
+https://dj-rest-auth.readthedocs.io/en/latest/installation.html
+
+pip install dj-rest-auth --> kur
+INSTALLED_APPS = (
+    ...,
+    'rest_framework',
+    'rest_framework.authtoken',
+    ...,
+    'dj_rest_auth'
+)  --> ekle
+urlpatterns = [
+    ...,
+    path('dj-rest-auth/', include('dj_rest_auth.urls'))
+] --> urls.py a ekle
+python manage.py migrate --> Yap.
+Yukardaki işlemleri yaparken users app.i oluşturup urlpatterns'lerinin bağlanması işlemini yapıyoruz.
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+} --> base.py veya settings.py'ekle.
+
+Yukarıdaki işlemler yapıldıktan sonra login işlemi yapıldığında data ile birlikte token da dönüyor. Bu işlem email ve password ilede login olma seçeneği sunuyor.
+
+Sonrasında serializer dosyası oluşturarak RegisterSerializer() yazıyoruz. Burada maksadımız email zorunlu ve uniq olsun istiyoruz.
+
+Signal yöntemi ile Token oluşturma.
+0- Aşağıdaki işlemle User tablomda bir kullanıcı oluştuğu zaman Sİnyali yakalayıp Token tablosunda da Token oluşturuyoruz.
+1- Yeni bir dosya oluşturuyoruz. signal.py Model kalabalık olmaması için.
+2- İmportlarımızı ve foksiyonumuzu yazıyoruz.
+from django.contrib.auth.admin import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=User)
+def create_Token(sender, instance=None, created=False, **kwargs ):
+    if created:
+        Token.objects.create(user=instance)
+3- signal işlemlerini model'de değil de ayrı bir dosyada oluşturduğum için apps.py'ye aşağıdaki kodu ekliyorum.
+    def ready(self) -> None:
+        import users.signals
+4- Register olunduğunda response ile birlikte token'inde dönerek login sayfasına gitmeden direk auth olabilmek için wiew'a create metodunu owerride ediyoruz.
+5- Aşağıdaki iki users/serializers.py'de class'ı token ile birlikte kullanıcının diğer bilgilerininde  login olunduğunda döndürülmesi için yapıyoruz.
+UserTokenSerializer()
+CustomTokenSerializer()
+6- 5. md. yapmaya müteakip settings.py veya base.py'de aşağıdaki komutu yazarak CustomTokenSerializer'ın kullanılmasını istiyoruz.
+REST_AUTH_SERIALIZERS = {
+    'TOKEN_SERIALIZER': 'users.serializers.CustomTokenSerializer',
+    
+}
+
+7- Sonuç = 
+
+{
+    "key": "19c3d218b0fc60a85b019f4f5f08cbedcbfec182",
+    "user": {
+        "id": 1,
+        "first_name": "",
+        "last_name": "",
+        "email": "ahl@gmail.com"
+    }
+}
