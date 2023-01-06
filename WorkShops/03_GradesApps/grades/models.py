@@ -6,9 +6,6 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name = "Ogretmen"
         
 class Lessons(models.Model):
     name = models.CharField(max_length=50)
@@ -17,27 +14,21 @@ class Lessons(models.Model):
     def __str__(self):
         return self.name
 
-    class Meta:
-        verbose_name = "Dersler"
-
 class Students(models.Model):
     number = models.IntegerField()
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
-
+    
     def __str__(self):
         return self.first_name
 
-    class Meta:
-        verbose_name = "ogrenci"
-
 class Grade(models.Model):
-    student = models.ManyToManyField(Students)
-    lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE)
+    student = models.ForeignKey(Students, on_delete=models.CASCADE, related_name="student_grades")
+    lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE, related_name="lesson_grades")
     grade = models.IntegerField()
-
-    def __str__(self):
-        return self.grade
-
+    
     class Meta:
-        verbose_name = "not"
+        unique_together = ('student', 'lesson')
+    
+    def __str__(self):
+        return str(self.grade)
