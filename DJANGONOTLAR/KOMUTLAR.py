@@ -171,8 +171,12 @@ MEDIA_ROOT = BASE_DIR / 'media/' --> media'ların yüklendiği root klasörü. Y
 # main urls.py ekle (settings.py de tanımladığımız yolları urls.py de belirtmeliyiz.)(3)
 from django.conf import settings
 from django.conf.urls.static import static
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 detay-->https://docs.djangoproject.com/en/4.1/howto/static-files/
+# veya
+if settings.DEBUG: # dev mode olduğu için.
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 '''
@@ -192,7 +196,33 @@ pip freeze > requirements.txt
 from decouple import config
 SECRET_KEY = config("SECRET_KEY")
 
-****
+--CORS-HEADERS;
+pip install django-cors-headers
+https://github.com/adamchainz/django-cors-headers (README bak)
+
+settings içine;
+
+INSTALLED_APPS = [ "corsheaders",  içine ekle, 
+
+MIDDLEWARE = [
+    ...,
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware", (bu default var, üzerine ekle)
+
+CORS_ALLOW_ALL_ORIGINS = True    #--> ekle en sona
+
+CORS_ALLOW_METHODS = [  
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+ALLOWED_HOSTS = ['*']  --> # olmalı.
+
+#! /////****//////
 
 #* PostgreSQL setup için  (dj-11)
 # PYTHON'UN POSTGRES ile çalışmasını sağlamak için;

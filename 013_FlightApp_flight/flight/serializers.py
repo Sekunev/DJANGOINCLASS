@@ -28,7 +28,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     passenger = PassengerSerializer(many=True, required=True)
     flight = serializers.StringRelatedField()  # __str__'deki ismi gelsin. read_only 
-    flight_id = serializers.IntegerField() # create ederken str'ye çevirdiğimiz için(yukarıda) sorun yaşamamak için int'e çeviriyoruz. 
+    flight_id = serializers.IntegerField(read_only=True) # create ederken str'ye çevirdiğimiz için(yukarıda) sorun yaşamamak için int'e çeviriyoruz. 
     user = serializers.StringRelatedField() # model tab. bulunan user'ide görmek istiyorum. ama str. olarak. 
     
     class Meta:
