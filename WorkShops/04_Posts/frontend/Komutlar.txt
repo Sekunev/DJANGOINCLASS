@@ -1,0 +1,11 @@
+next.js ile tailwindcss kurulumu:
+npx create-next-app --example with-tailwindcss <proje adı buraya istediğnizi yazın>  örn=> npx create-next-app --example with-tailwindcss personal-app
+
+yarn ile;
+yarn create next-app --example with-tailwindcss <proje adı buraya istediğnizi yazın>   örn=> yarn create next-app --example with-tailwindcss personal-app
+
+react-hook-form Kurulumu:
+(React Hook Form ile basit form doğrulama.)
+npm install react-hook-form
+
+yarn add react-hook-form

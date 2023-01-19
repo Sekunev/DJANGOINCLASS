@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-#! Daha karmaşık user modeli oluşturmak istersek bunu 2 yolu bulunuyor.
+#! Daha karmaşık user modeli oluşturmak istersek bunun 2 yolu bulunuyor.
 #? 1
 # User modeli --> class User(AbstractUser): inherit edilerek yapılmış
 # Biz de AbstractUser'dan  inherit ederek kendi User modelimizi oluşturabiliriz.

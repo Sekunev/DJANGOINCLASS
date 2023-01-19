@@ -1,0 +1,71 @@
+Neler yapildi adim adim
+1-https://www.pythonanywhere.com/login/ e git hesap ac
+2- Github'de proje hazır olmalı.
+3-burada projeyi canliya almak icin kullaniyoruz
+4-
+5-new consoledan / bashe gir, islem uzun surebilir.
+
+6-ls komudu ile icindekilere bakabilir, rm -rf dosya adi ile istedigini silebilirsin
+
+7-repodan linkini al ve consola git clone <link> ile aktar.
+8-cd ile proje icersine gir(backend kismina), daha sonra env kurulumu yap.
+python -m venv env
+
+9- env aktif et, (ls -a ile gizli dosyalarida gorebilirsin),(cd .. ile ust dosyaya gecebilirsin)(linux ortamı olduğu için active komutu farklı.)
+source env/bin/activate
+
+10-daha sonra requirements.txt deki kurulumlari yap.
+pip install -r requirements.txt
+
+11-daha sonra dashborddan webe tikla, Add a new web app'e tıkla duzenlemeyi yap
+A>ilk sayfada değişiklik yok. 2 sayfada manuel configration sec ve python versyonunu (python --version komutu ile versiyonunu görebilirsin.)sec
+
+B>acilan pencereden code kisminda source code ve viryualenv de pathi ayarliyacagiz
+1>ls ile dosyaya bak ve ğroje dosyasına gir daha sonra pwd(cwd) ile cikan yolu kopyala ve code kismindaki source coda ve working dir. kısmına yapistir.
+
+2>wsgi confige gir ve sadece django olan kisim kalacak diğerleri silinecek ve ilk iki satir haric yorumdan kaldir. Burada path kısmına az önce pwd ile aldığımız yolu yazacağız.Save ile kaydet.
+
+3> path yolu içerisinde manage.py dosyası olan yol olucak.
+
+4> os.environ ile baslayan yerde settings.py nin bulunduğu dosyamizin adini yazicaz, eger claruswayin reposundan aldiysaniz dosya adi (main)
+
+C>Simdide Virtualenv kismini ayarliyacagiz
+1>Önce bash'den cd ile dosya içerisindeki env dosyası içerisine girelim
+2>Sonra pwd ile yolu kopyalayalım.
+3>Virtualenv kısmına bu yolu yapıştır.
+
+D> web içerisinde Go to directory kısmını farklı sekmede aç. Burada aşağıdaki ayarları yap:
+1- Proje klasörü içerisinde yani main , env nin bulunduğu yerde Files kısmını kullanarak .env dosyası oluştur.
+2- Bu oluşan dosya içerisine 
+SECRET_KEY=
+DEBUG=True
+ENV_NAME=dev  yaz.
+3- dev dosyasına git. import, DEBUG, DATABASES kalsın geri kalanları yoruma al. Kaydet. Yoruma alma sebebi. bunlar yerelde çalışması içindi o yüzden.
+
+E> Consol'a gel.
+1- python manage.py migrate
+2- python manage.py createsuperuser
+Komutlarını çalıştır.
+
+F> WEB kısmından Reload sekmesine (yeşil) tıklıyoruz.
+
+G> Admin panele gidince CSS olmayan bir görüntü çıkıyor. Bunu engellemek için;
+1- web / Go to directory  / main / settings.py veya base.py'a gidiyoruz. STATIC_URL altına aşağıdaki komutları yapıştırıyoruz.
+
+2- STATIC_ROOT  = BASE_DIR / 'static'  --> Base dosyası altında static isimli dosya oluştur demiş oluyoruz. 
+
+3- consola geri dön ve aşağıdaki komutu çalıştır. Bu komutla bütün static file'ler tek bir folder içerisinde toplanıyor.
+python manage.py collectstatic
+
+4- web / Static files kısmında 
+URL'ye --> /static/
+Directory ' --> collectstatic'i komutunu çalıştırdığımızda static dosyasının yolunu veriyor o yolu yapıştırıyoruz. örnek(/home/sekune/TutorialApp/api/static)
+
+not: ALLOWED_HOSTS --> Hatası alındığında base.py içerisinde boş olan köşeli parantezler içerisine '*' yerleştiriyoruz.
+
+
+
+
+
+
+
