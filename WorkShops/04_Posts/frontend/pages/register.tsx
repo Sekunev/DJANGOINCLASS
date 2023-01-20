@@ -7,8 +7,9 @@ import { RegisterType } from "../types";
 type Props = {};
 
 const register = (props: Props) => {
-  const { registerFunc } = useAuth();
+  const { registerFunc, errorMessage } = useAuth();
   // useForm --> form doğrulama için
+  console.log(errorMessage);
   const {
     register,
     handleSubmit,
@@ -37,12 +38,17 @@ const register = (props: Props) => {
             placeholder="Username"
             {...register("username", { required: true })}
           />
-          {errors.username && <p>Girmek Zorunlu</p>}
+          {errorMessage?.username?.map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
           <input
             type="text"
             placeholder="Email"
             {...register("email", { required: true })}
           />
+          {errorMessage?.email.map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
           <input
             type="text"
             placeholder="First Name"
@@ -58,11 +64,17 @@ const register = (props: Props) => {
             placeholder="Password"
             {...register("password", { required: true })}
           />
+          {errorMessage?.password?.map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
           <input
             type="text"
             placeholder="Password Again"
             {...register("password2", { required: true })}
           />
+          {errorMessage?.password2?.map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
           <button type="submit">Register</button>
         </form>
       </div>

@@ -1,0 +1,36 @@
+services:
+  backend:
+    # container_name: backend # optional (default:key)
+    image: docker-compose-backend1 # build, if no image
+    build: ./backend # Which folder (project folder) (must be dockerfile in the folder)
+    ports: # external:internal ports
+      - 8000:8000
+    restart: on-failure # when restart
+    depends_on:
+      - db # database ayağa kalktıktan sonra çalış.
+    volumes: # external:internal volumes
+      - ./backend:/backend
+
+  frontend:
+    # container_name: frontend
+    image: docker-compose-frontend1
+    build: ./frontend
+    ports:
+      - 3000:3000
+    restart: on-failure
+    depends_on:
+      - backend # first run backend.
+    volumes:
+      - ./frontend:/frontend
+
+  db:
+    image: postgres:13-alpine
+    environment: # .env'deki değişkenlerden farklı ama valueleri aynı.
+      - POSTGRES_USER=sekune
+      - POSTGRES_PASSWORD=123456Aa.
+      - POSTGRES_DB=docker-django
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+
+volumes:
+  pg_data: # db volume key'i.
