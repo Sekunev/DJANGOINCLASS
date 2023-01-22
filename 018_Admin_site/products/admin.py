@@ -1,6 +1,11 @@
 from django.contrib import admin
-from .models import Product, Review
+from .models import Product, Review, Category
 from django.utils import timezone
+from django.utils.safestring import mark_safe
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter
+from import_export.admin import ImportExportModelAdmin
+from products.resources import ReviewResource
 
 # Review içerisinde Products'a ulaşıyorum ancak Products içinde Review'a ulaşamıyorum. Bu sorunu ortadan kaldırmak için. Bu clası yazdıktan sonra inlines keywordu ile göstrilimek istenen clasın altında tanımlamamız gerekli.
 class ReviewInline(admin.TabularInline):
@@ -12,33 +17,38 @@ class ReviewInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'create_date', 'is_in_stock', 'update_date', 'added_days_ago', 'how_many_reviews')  # Product Home sayfasında gösterilecek field'ler
+    list_display = ('name', 'create_date', 'is_in_stock', 'update_date', 'added_days_ago', 'how_many_reviews', "bring_img_to_list")  # Product Home sayfasında gösterilecek field'ler
     list_editable = ("is_in_stock",)  # edit edilme edilmeme durumu oluşturur.
     # list_display_links = ('create_date',)  # field'i link haline getirir.
-    list_filter = ("is_in_stock", "create_date")  # Filtreleme yapar.
+    list_filter = ("is_in_stock", ("create_date", DateTimeRangeFilter))  # Filtreleme yapar.
     ordering = ('-update_date',)  # Field'e göre sıralama yapar.
     search_fields = ("name",)  # Field'e göre search bar oluşturur.
     prepopulated_fields = {'slug' : ('name',)}  # aralara - koyarak yeni bir bar oluşturur. 
     list_per_page = 25 # 25'li sayfalar halinde göster.
     date_hierarchy = "update_date"  # Field'e göre tarih filtrelemesi
     # fields = (('name', 'slug'), 'description', "is_in_stock") # Objenin içeriğini nasıl görmek istiyorsak.  fieldset kullandığımız zaman bunu kullanamayız
+    inlines = (ReviewInline,)
+    readonly_fields = ("bring_image",)
 
+    # Herbir objenin içeriğini özelleştirmek için. fieldset
     fieldsets = (
         (None, {
             "fields": (
                 ('name', 'slug'), "is_in_stock" # to display multiple fields on the same line, wrap those fields in their own tuple
+                # aynı satırda birden çok alanı görüntülemek için bu alanları kendi demetlerine sarın
             ),
             # 'classes': ('wide', 'extrapretty'), wide or collapse
         }),
-        ('Optionals Settings', {
+        ('My section', {
             "classes" : ("collapse", ),
-            "fields" : ("description",),
+            "fields" : ("description","categories", "product_img", "bring_image"),
             'description' : "You can use this section for optionals settings"
         })
     )
 
+    filter_horizontal = ("categories", )  # Yanyana görüntü
     actions = ("is_in_stock", )
-    inlines = (ReviewInline,)
+    
 
     def is_in_stock(self, request, queryset):
         # print(queryset) <QuerySet [<Product: Diane Ramirez>]>
@@ -62,17 +72,34 @@ class ProductAdmin(admin.ModelAdmin):
 
     how_many_reviews.short_description = 'Kaç review var'
 
+    def bring_image(self, obj):
+        if obj.product_img:
+            return mark_safe(f"<img src={obj.product_img.url} width=400 height=400></img>")
+        return mark_safe(f"<h3>{obj.name} has not image </h3>")
+    
+    def bring_img_to_list(self, obj):
+        if obj.product_img:
+            return mark_safe(f"<img src={obj.product_img.url} width=50 height=50></img>")
+        return mark_safe("******")
+    bring_img_to_list.short_description = 'Fotoğraf'
 
 
-class ReviewAdmin(admin.ModelAdmin):
+
+class ReviewAdmin(ImportExportModelAdmin):
     list_display = ('__str__', 'created_date', 'is_released')
     list_per_page = 50
     raw_id_fields = ('product',)  # ilgili products'ın id'si gelir
+    # list_filter = ("product",)  # Alttaki 3. parti filtreleme daha kullanışlı.
+    list_filter = (
+        ('product', RelatedDropdownFilter),
+    )
+    resource_class = ReviewResource
 
 
 
 admin.site.register(Product, ProductAdmin)  # oluşturulan clasıda ekle.
 admin.site.register(Review, ReviewAdmin)  
+admin.site.register(Category)  
 
 admin.site.site_title = "Clarusway Title"  # Site başlığını değiştiriyor.
 admin.site.site_header = "Clarusway Admin Portal"  # Giriş sayfasındaki ilk Başlık değişir.

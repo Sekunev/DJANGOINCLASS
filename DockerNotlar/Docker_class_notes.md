@@ -138,7 +138,7 @@ EXPOSE 8000
 # İmage oluştur
 # $ docker build -t backend:v1 .
 # imageleri listele
-# docker image
+# docker images
 # Create and Start Container:
 # -d -> Daemon Mode
 # $ docker run -d -p 8000:8000 --name backend backend

@@ -14,7 +14,7 @@ const useAuth = () => {
       console.log(error);
     }
   };
-
+  console.log(errorMessage);
   return { registerFunc, errorMessage };
 };
 

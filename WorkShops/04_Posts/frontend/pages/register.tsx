@@ -46,7 +46,7 @@ const register = (props: Props) => {
             placeholder="Email"
             {...register("email", { required: true })}
           />
-          {errorMessage?.email.map((item, index) => (
+          {errorMessage?.email?.map((item, index) => (
             <p key={index}>{item}</p>
           ))}
           <input
