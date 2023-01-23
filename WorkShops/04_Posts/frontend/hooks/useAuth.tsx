@@ -2,20 +2,28 @@ import React, { useState } from "react";
 import { RegisterType, ErrorType } from "../types";
 import axios from "axios";
 import { REGISTER_URL } from "../constant/urls";
+import { useRouter } from "next/router";
 
 const useAuth = () => {
-  const [errorMessage, setErrorMessage] = useState<ErrorType>();
+  const [errorMessage, setErrorMessage] = useState<ErrorType | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const registerFunc = async (registerInfo: RegisterType) => {
+    setLoading(true);
     try {
       const { data } = await axios.post(REGISTER_URL, registerInfo);
       // console.log(data);
+      setErrorMessage(null);
+      sessionStorage.setItem("user", JSON.stringify(data));
+      router.push("/");
     } catch (error: any) {
       setErrorMessage(error.response.data);
-      console.log(error);
     }
+    setLoading(false);
   };
-  console.log(errorMessage);
-  return { registerFunc, errorMessage };
+
+  return { registerFunc, errorMessage, loading };
 };
 
 export default useAuth;
