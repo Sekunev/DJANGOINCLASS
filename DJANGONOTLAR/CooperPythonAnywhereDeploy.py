@@ -93,6 +93,25 @@ DEBUG=True
 ..... (projedeki env dosyasından başka birşey yazılması gerekirse ekle)
 # sağ üst köşeden SAVE et,
 
+# Files'den dev dosyasına git. import, DEBUG, DATABASES kalsın geri kalanları yoruma al. Kaydet. Yoruma alma sebebi. bunlar yerelde çalışması içindi o yüzden.
+# dev.py içinden debug toolbar ile ilgili ayarları kapat,
+from .base import *
+
+DEBUG = config("DEBUG")
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        }
+}
+
+# bunlar hariç herşey yoruma alınacak,
+
+# buna göre .env dosyası
+SECRET_KEY=ginfconh+5hy4ja1ryor%fgdgf
+ENV_NAME=dev
+DEBUG=True
 
 # Bash console'dan
 cd ..
@@ -143,21 +162,3 @@ Static files:
 
 
 
-# dev.py içinden debug toolbar ile ilgili ayarları kapat,
-from .base import *
-
-DEBUG = config("DEBUG")
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        }
-}
-
-# bunlar hariç herşey yoruma alınacak,
-
-# buna göre .env dosyası
-SECRET_KEY=ginfconh+5hy4ja1ryor%fgdgf
-ENV_NAME=dev
-DEBUG=True
