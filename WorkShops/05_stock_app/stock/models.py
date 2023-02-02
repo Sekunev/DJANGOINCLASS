@@ -11,6 +11,7 @@ class Category(models.Model):
 
 class Brand(models.Model):
     name = models.CharField(max_length=25)
+    image = models.TextField(blank=True, null=True)
     def __str__(self):
         return f'{self.name}'
 
@@ -19,6 +20,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, max_length=25, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, max_length=25, on_delete=models.CASCADE)
     stock = models.SmallIntegerField()
+    createds = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name} - {self.category}'
@@ -27,6 +30,7 @@ class Firm(models.Model):
     name = models.CharField(max_length=25)
     phone = models.CharField(max_length=25)
     address = models.CharField(max_length=50)
+    image = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.name}'

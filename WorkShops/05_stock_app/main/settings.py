@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'drf_yasg',
     'debug_toolbar',
+    'django_filters',
     # myapps
     'stock',
     'users',
@@ -142,5 +143,9 @@ INTERNAL_IPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
+    
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 4,
 }

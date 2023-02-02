@@ -98,11 +98,12 @@ class CustomCursorPagination(CursorPagination):
 FİLTER
 a- Globalde:
 pip install django-filter  --> yükle
+pip freeze > requirements.txt
 INSTALLED_APPS = ['django_filters']  --> settings.py ye ekle.
 REST_FRAMEWORK = {
     # filter + search + ordering
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
-} --> REST_FRAMEWORK ekle.
+} --> settings.py ye REST_FRAMEWORK ekle.
 filterset_fields = ['field_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan views'a ekle.
 
 b- CustomFilter --> views içerisinde.
@@ -112,5 +113,6 @@ filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] --> Hangi 
 filterset_fields = ['first_name', 'last_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan. Birebir eşleşme olmazsa boş döner.
 
 search_fields = ['^first_name'] -->  baş harfine göre arama yapmak için, 'first_name', 'last_name' fieldlerine göre arama yapar. '^' işareti olmadığında first_name içerisinde belirtilen karakteri arar. işaret konulduğunda belirtilen karakterle başlayan datalar döndürülür.
+search_fields = ['firm__name']  --> modelinde ForeignKey ile tanımlı ise bu şekilde arama yapılabilir. firm fieldinin bağlı olduğu modelin name field'inde arama yapar.
 ordering_fields = ['id']  --> filter boxta hangi seçenekler çıksın istiyorsanız onu yazıyorsunuz
 ordering = ['-id']  --> default olarak ilk açıldığında buraya yazdığımıza göre sıralıyor. (-) Tersten.

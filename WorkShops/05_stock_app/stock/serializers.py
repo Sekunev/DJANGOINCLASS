@@ -9,7 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
-        fields = ('name',)
+        fields = ('name', 'image')
 
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
@@ -18,18 +18,25 @@ class ProductSerializer(serializers.ModelSerializer):
     brand_id = serializers.IntegerField()
     class Meta:
         model = Product
-        fields = ('name','category', 'category_id', 'brand', 'brand_id', 'stock')
+        fields = ('name','category', 'category_id', 'brand', 'brand_id', 'stock', 'createds', 'updated')
 
 class FirmSerializer(serializers.ModelSerializer):
     class Meta:
         model = Firm
-        fields = ('name','phone','address')
+        fields = ('name','phone','address', 'image')
 
 class PurchasesSerializer(serializers.ModelSerializer):
-
+    product = ProductSerializer()
+    category = serializers.SerializerMethodField()
     class Meta:
         model = Purchases
-        fields = ('user','firm','product', 'brand', 'quantity', 'price', 'price_total')
+        fields = ("id", "user", "firm", "product", "brand", "quantity", "price", "price_total","category")
+        
+    def get_category(self,obj):
+        products = Product.objects.filter(id=obj.product_id).values()
+        print(products)
+        category_id= products[0]["category_id"]
+        return list(Category.objects.filter(id=category_id).values())[0]["name"]
 
 
 

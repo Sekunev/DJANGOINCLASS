@@ -21,30 +21,43 @@ class ProductView(ModelViewSet):
 class FirmView(ModelViewSet):
     queryset = Firm.objects.all()
     serializer_class = FirmSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 class PurchasesView(ModelViewSet):
     queryset = Purchases.objects.all()
     serializer_class = PurchasesSerializer
 
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['firm']
+    search_fields = ['firm__name']
+    ordering_fields = ['id']
+    ordering = ['-id'] 
+
+
+
     def create(self, request, *args, **kwargs):
-    
+        response = super().create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # purchase = serializer.save()
-        # purchase.price_total = purchase.quantity * purchase.price
-        # purchase.save()
-
         quantity_ = serializer.validated_data.get('quantity')
         price_ = serializer.validated_data.get('price')
-        price_total_ = serializer.validated_data.get('price_total') 
-        price_total_ = quantity_ * price_
+        response.data['price_total'] = quantity_ * price_
 
-        price_total_.save() 
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return response 
 
 class SalesView(ModelViewSet):
     queryset = Sales.objects.all()
     serializer_class = SalesSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        quantity_ = serializer.validated_data.get('quantity')
+        price_ = serializer.validated_data.get('price')
+        response.data['price_total'] = quantity_ * price_
+
+        return response 
