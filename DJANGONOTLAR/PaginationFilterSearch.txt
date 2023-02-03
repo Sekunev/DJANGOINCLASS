@@ -96,17 +96,24 @@ class CustomCursorPagination(CursorPagination):
 4- CursorPagination kullanılabilmesi için modelde created isimli bir field oluşturduk. created'in sebebi CursorPagination sourccode'unda default değerinden Cursor Nerde kalmışsa oradan devam eder.
 
 FİLTER
-a- Globalde:
+# yazılan kelimenin aynısını arar,
+# mesela name için data içinde cooper varsa coop yazınca bulmaz.
 pip install django-filter  --> yükle
 pip freeze > requirements.txt
+
+A- Eğer Djangonun default FILTER ayarlarını kullanacaksak, iki farklı şekilde yapılabilir,
 INSTALLED_APPS = ['django_filters']  --> settings.py ye ekle.
 REST_FRAMEWORK = {
     # filter + search + ordering
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.SearchFilter', 'rest_framework.filters.OrderingFilter'],
 } --> settings.py ye REST_FRAMEWORK ekle.
 filterset_fields = ['field_name'] --> Hangi stunlara göre filtreleme yapmak istiyorsan views'a ekle.
+böyle yapınca global alanda tanımlanmış olur ve onu kullanır,
 
-b- CustomFilter --> views içerisinde.
+B - views içinde import ederek:
+# settings içine birşey yazmaya gerek yok,
+# fakat yazılsa bile local alanda olan globalı ezeceğinden import edilen çalışacaktır.
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter  --> import et
 filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] --> Hangi filtreleme yöntemini istiyorsan seç.
