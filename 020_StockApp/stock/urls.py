@@ -6,10 +6,10 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 router.register('categories', CategoryView)
-# router.register('brand', BrandView)
-# router.register('product', ProductView)
-# router.register('firm', FirmView)
-# router.register('purchases', PurchasesView)
-# router.register('sales', SalesView)
+router.register('brands', BrandView)
+router.register('firm', FirmView)
+router.register("products", ProductView)
+router.register('purchases', PurchaseView)
+router.register('sales', SalesView)
 
 urlpatterns = router.urls
