@@ -65,3 +65,8 @@ class Sales(UpdateCreate):
     def __str__(self):
         return f'{self.product} - {self.quantity}'
 
+ #?------------- blank=True , null=True ----------------
+    # blank=True, serializer ile ilgilidir, yani boş bırakılabilir,
+    # null=True, DB ile ilgilidir, yani boş bırakılabilir ve DB null kayıt edilir,
+    #! eğer sadece  blank=True varsa veri boş gelebilir, ama DB kayıt edilmeden önce
+    #! bir işlem/hesaplama vs. yapılıp DB boş/null gitmesini önlemek gerekir.

@@ -32,3 +32,9 @@ class Student(models.Model):
 #! auto_now : Nesne her kaydedildiğinde alanı otomatik olarak şimdi olarak ayarlar.
 
 #! auto_now_add : Nesne ilk oluşturulduğunda alanı otomatik olarak şimdi olarak ayarlayın.
+
+ #?------------- blank=True , null=True ----------------
+    # blank=True, serializer ile ilgilidir, yani boş bırakılabilir,
+    # null=True, DB ile ilgilidir, yani boş bırakılabilir ve DB null kayıt edilir,
+    #! eğer sadece  blank=True varsa veri boş gelebilir, ama DB kayıt edilmeden önce
+    #! bir işlem/hesaplama (signal)vs. yapılıp DB boş/null gitmesini önlemek gerekir.

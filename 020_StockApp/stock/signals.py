@@ -13,3 +13,9 @@ def calculate_total_price(sender, instance, **kwargs):
     instance.price_total = instance.quantity * instance.price
 
 # signal metodunu app.py'e eklemeyi unutma.
+
+ #?------------- blank=True , null=True ----------------
+    # blank=True, serializer ile ilgilidir, yani boş bırakılabilir,
+    # null=True, DB ile ilgilidir, yani boş bırakılabilir ve DB null kayıt edilir,
+    #! eğer sadece  blank=True varsa veri boş gelebilir, ama DB kayıt edilmeden önce
+    #! bir işlem/hesaplama vs. yapılıp DB boş/null gitmesini önlemek gerekir.
