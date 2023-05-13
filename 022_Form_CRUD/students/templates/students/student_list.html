@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block body %}
+<h2>Student List</h2>
+<br />
+<ul>
+  {% for student in students|dictsort:"number" %}
+  <li>{{ student.number }} - {{ student }}</li>
+  {% endfor %}
+</ul>
+{% endblock body %}
